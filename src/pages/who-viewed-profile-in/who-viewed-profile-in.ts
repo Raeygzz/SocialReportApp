@@ -28,14 +28,14 @@ export class WhoViewedProfileInPage {
       env.viewData.push({"date": env.dates[i],"viewers":viewers});
     }
     console.log("viewData",viewData);
-    this.dbViewFlagUpdate();
+    // this.dbViewFlagUpdate();
   }
 
-  dbViewFlagUpdate() {
-    let db = this.sqliteService.getDbInstance();
-    db.executeSql('Update InstagramViewers set viewFlag=1', [])
-      .then(() => console.log('Updated viewer in InstagramViewers Table'))
-      .catch(e => console.log(e));
-  }
+  // dbViewFlagUpdate() {
+  //   let db = this.sqliteService.getDbInstance();
+  //   db.executeSql('Update InstagramViewers set viewFlag=1', [])
+  //     .then(() => console.log('Updated viewer in InstagramViewers Table'))
+  //     .catch(e => console.log(e));
+  // }
 
 }

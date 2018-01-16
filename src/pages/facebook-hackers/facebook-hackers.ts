@@ -29,14 +29,14 @@ export class FacebookHackersPage {
     }
     console.log("viewData",viewData);
 
-    this.dbViewFlagUpdate();
+    // this.dbViewFlagUpdate();
   }
 
-  dbViewFlagUpdate() {
-    let db = this.sqliteService.getDbInstance();
-    db.executeSql('Update FacebookHackers set viewFlag=1', [])
-      .then(() => console.log('Updated viewer in FacebookHackers Table'))
-      .catch(e => console.log(e));
-  }
+  // dbViewFlagUpdate() {
+  //   let db = this.sqliteService.getDbInstance();
+  //   db.executeSql('Update FacebookHackers set viewFlag=1', [])
+  //     .then(() => console.log('Updated viewer in FacebookHackers Table'))
+  //     .catch(e => console.log(e));
+  // }
 
 }

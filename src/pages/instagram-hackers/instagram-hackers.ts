@@ -29,15 +29,15 @@ export class InstagramHackersPage {
     }
     console.log("viewData",viewData);
 
-    this.dbViewFlagUpdate();
+    // this.dbViewFlagUpdate();
   }
 
-  dbViewFlagUpdate() {
-    let db = this.sqliteService.getDbInstance();
-    db.executeSql('Update InstagramHackers set viewFlag=1', [])
-      .then(() => console.log('Updated viewer in InstagramHackers Table'))
-      .catch(e => console.log(e));
-  }
+  // dbViewFlagUpdate() {
+  //   let db = this.sqliteService.getDbInstance();
+  //   db.executeSql('Update InstagramHackers set viewFlag=1', [])
+  //     .then(() => console.log('Updated viewer in InstagramHackers Table'))
+  //     .catch(e => console.log(e));
+  // }
 
 
 }

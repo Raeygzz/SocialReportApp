@@ -13,15 +13,15 @@ export class YourLikersPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService:SqliteService) {
     this.likers = this.navParams.get("likers");
-    this.dbViewFlagUpdate();
+    // this.dbViewFlagUpdate();
   }
 
-  dbViewFlagUpdate() {
-    let db = this.sqliteService.getDbInstance();
-          db.executeSql('Update InstagramLikers set viewFlag=1', [])
-          .then(() => console.log('Updated Liker in InstagramLikers Table'))
-          .catch(e => console.log(e));
-  }
+  // dbViewFlagUpdate() {
+  //   let db = this.sqliteService.getDbInstance();
+  //         db.executeSql('Update InstagramLikers set viewFlag=1', [])
+  //         .then(() => console.log('Updated Liker in InstagramLikers Table'))
+  //         .catch(e => console.log(e));
+  // }
 
 
 }

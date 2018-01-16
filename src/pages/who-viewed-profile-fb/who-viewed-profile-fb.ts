@@ -29,14 +29,14 @@ export class WhoViewedProfileFbPage {
     }
     console.log("viewData",viewData);
 
-    this.dbViewFlagUpdate();
+    // this.dbViewFlagUpdate();
   }
 
-  dbViewFlagUpdate() {
-    let db = this.sqliteService.getDbInstance();
-    db.executeSql('Update FacebookViewers set viewFlag=1', [])
-      .then(() => console.log('Updated viewer in FacebookViewers Table'))
-      .catch(e => console.log(e));
-  }
+  // dbViewFlagUpdate() {
+  //   let db = this.sqliteService.getDbInstance();
+  //   db.executeSql('Update FacebookViewers set viewFlag=1', [])
+  //     .then(() => console.log('Updated viewer in FacebookViewers Table'))
+  //     .catch(e => console.log(e));
+  // }
 
 }

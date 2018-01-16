@@ -13,13 +13,13 @@ export class MostLikedPhotoFbPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService:SqliteService) {
     this.mostLikedPhotosArray = navParams.get("mostLikedPhotosArray");
-    this.dbViewFlagUpdate();
+    // this.dbViewFlagUpdate();
   }
 
-  dbViewFlagUpdate() {
-    let db = this.sqliteService.getDbInstance();
-          db.executeSql('Update FacebookPhotos set viewFlag=?', [1])
-          .then(() => console.log('Updated Photo in FacebookPhotos Table'))
-          .catch(e => console.log(e));
-  }
+  // dbViewFlagUpdate() {
+  //   let db = this.sqliteService.getDbInstance();
+  //         db.executeSql('Update FacebookPhotos set viewFlag=?', [1])
+  //         .then(() => console.log('Updated Photo in FacebookPhotos Table'))
+  //         .catch(e => console.log(e));
+  // }
 }
