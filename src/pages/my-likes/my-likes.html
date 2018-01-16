@@ -1,0 +1,20 @@
+<ion-header>
+  
+    <ion-navbar>
+      <ion-title style="text-align:center">Fotos más gustadas</ion-title>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  <ion-content padding>
+      <ion-list  [virtualScroll]="mostLikedPhotosArray" [approxItemHeight]="'32px'" >
+          <ion-item  *virtualItem="let photoDetail">
+          <ion-avatar item-start>
+            <img src="{{photoDetail.source}}">
+          </ion-avatar>
+          <p>
+            <b>{{photoDetail.likesCount}} gusta.</b>
+          </p>
+        </ion-item>
+      </ion-list>
+  </ion-content>

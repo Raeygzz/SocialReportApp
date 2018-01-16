@@ -1,0 +1,35 @@
+<ion-header>
+  
+    <ion-navbar>
+      <ion-title style="text-align:center">¿Quien ha visto tu perfil?</ion-title>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  
+  <ion-content padding>
+    
+    <ion-list *ngFor="let view of viewData">
+      
+  <ion-item>
+    <p>
+      <b style="text-align:center">{{view.date.date}}</b>
+    </p>
+  </ion-item>
+
+  <ion-list *ngFor="let viewer of view.viewers">
+    
+<ion-item>
+  <ion-avatar item-start>
+    <img src="{{viewer.picture}}">
+  </ion-avatar>
+  <p>
+    <b>{{viewer.name}}</b> vio tu perfil.
+  </p>
+</ion-item>
+
+</ion-list>
+
+</ion-list>
+
+</ion-content>

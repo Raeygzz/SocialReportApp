@@ -1,0 +1,27 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title style="text-align:center">¿A quién le gustas más?</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding *ngIf="data">
+
+      <ion-list [virtualScroll]="likers" [approxItemHeight]="'32px'">
+              
+          <ion-item *virtualItem="let liker">
+                <ion-avatar item-start>
+                  <img src="{{liker.picture}}">
+                </ion-avatar>
+                <p>
+                  <b>{{liker.name}}</b> gusta <b>{{liker.user_count}}</b> veces.
+                </p>
+
+          </ion-item>
+        
+        </ion-list>
+
+</ion-content>
+

@@ -1,0 +1,79 @@
+<ion-header style="text-align:center">
+  <ion-navbar>
+    <ion-title>
+      Facebook
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentActionSheet()">
+        <ion-icon name="ios-settings-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf='userReady' style="border:1px solid transparent; border-radius:20px">
+    <ion-card-content style="background-color:#3B5998;">
+      <br>
+      <ion-thumbnail style="padding-left:35%;padding-right:35%;">
+        <img [src]="url" height="80px" width="45px" style="border:2px solid white;border-radius:15px" (error)="errorHandler(event) ">
+      </ion-thumbnail>
+      <br>
+    </ion-card-content>
+  </ion-card> 
+  <ion-card style="border:1px solid transparent;border-radius:20px;margin-top: -35px;width: 90vw;margin-left: 5vw;">
+    <ion-card-header style="text-align:center">
+      {{name}}
+    </ion-card-header>
+  </ion-card>
+  <ion-list> 
+    <ion-item (click)="whoViewedYourProfile()">
+      <ion-avatar item-start>
+          <ion-badge *ngIf="whoViewedYourProfileFbBadge" color="danger">+{{whoViewedYourProfileFbCount}}</ion-badge>
+        <img [src]="url" (error)="errorHandler(event) ">
+      </ion-avatar>
+      <h2>¿Quien ha visto tu perfil?</h2>
+      <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-avatar item-start>
+          <ion-badge *ngIf="mostLikedPhotoFbBadge" color="danger">+{{mostLikedPhotoFbCount}}</ion-badge>
+        <img [src]="url" (error)="errorHandler(event) ">
+      </ion-avatar>
+      <h2 (click)="mostLikedPhotos()">Fotos más gustadas</h2>
+      <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-avatar item-start>
+          <ion-badge *ngIf="likesMeMostFbBadge" color="danger">+{{likesMeMostFbCount}}</ion-badge>
+        <img [src]="url" (error)="errorHandler(event) ">
+      </ion-avatar>
+      <h2 (click)="dbLikers()">¿A quién le gustas más?</h2>
+      <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-avatar item-start>
+          <ion-badge *ngIf="lovesMeMostFbBadge" color="danger">+{{lovesMeMostFbCount}}</ion-badge>
+        <img [src]="url" (error)="errorHandler(event) ">
+      </ion-avatar>
+      <h2 (click)="dbLoveReacters()">¿A quién le encantas más?</h2>
+      <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
+    </ion-item>
+    <ion-item>
+      <ion-avatar item-start>
+          <ion-badge *ngIf="laughsMeMostFbBadge" color="danger">+{{laughsMeMostFbCount}}</ion-badge>
+        <img [src]="url" (error)="errorHandler(event) ">
+      </ion-avatar>
+      <h2 (click)="dbLaughReacters()">¿A quién haces reír más?</h2>
+      <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
+    </ion-item>
+    <ion-item (click)="fbHackers()">
+      <ion-avatar item-start>
+          <ion-badge *ngIf="whoHackedYourProfileFbBadge" color="danger">+{{whoHackedYourProfileFbCount}}</ion-badge>
+        <img [src]="url" (error)="errorHandler(event) ">
+      </ion-avatar>
+      <h2>¿Quién intentó hackear tu perfil?</h2>
+      <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>
