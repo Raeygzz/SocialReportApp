@@ -66,8 +66,8 @@ export class ProfilePage {
 
   ionViewWillEnter(){
     let vm = this;
-    this.instagramViewers();
-    this.instagramHackers();
+    // this.instagramViewers();
+    // this.instagramHackers();
     this.badgeCounterLikers();
     this.badgeCounterPhotos();
     this.badgeCounterViewers();
@@ -101,14 +101,14 @@ export class ProfilePage {
     },1000000);
 
     let notify;
-    let timer = 10000;
+    let timer = 60000;
     notify = setInterval(() => {
-      this.checkHacker();
-      this.checkViewer();
+      // this.checkHacker();
+      // this.checkViewer();
       this.instagramViewers();
       this.instagramHackers();
       this.notificationChecker();
-      timer += 30;
+      timer += 10000;
     },timer);
 
     vm.notifier();
@@ -499,10 +499,15 @@ export class ProfilePage {
     let date = new Date().toLocaleDateString();
 
     if (localStorage.getItem("todays_date_hackersIn") == date)
-      return false;
+      {
+        return false;
+      }
+      else{
 
-    localStorage.setItem("todays_date_hackersIn", date);
-    return true;
+        localStorage.setItem("todays_date_hackersIn", date);
+        return true;
+    
+      }
 
   }
 
@@ -676,10 +681,14 @@ export class ProfilePage {
     let date = new Date().toLocaleDateString();
   
     if( localStorage.getItem("todays_date_in") == date ) 
+       {
         return false;
-  
+       }
+  else{
     localStorage.setItem("todays_date_in",date);
-        return true;
+    return true;
+  }
+
   }
 
   getRandomInt(min, max) {

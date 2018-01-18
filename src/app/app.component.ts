@@ -28,6 +28,7 @@ export class MyApp {
       splashScreen.hide();
       this.backgroundMode.enable();
       this.backgroundMode.setDefaults({ silent: true });
+      localStorage.setItem("online", "true");
 
       this.sqliteService.createDatabase().then((data: any) => {
         data.executeSql('CREATE TABLE IF NOT EXISTS FacebookPhotos (id INTEGER PRIMARY KEY , source, viewFlag INTEGER)', {})

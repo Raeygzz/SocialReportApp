@@ -68,8 +68,6 @@ export class FacebookProfilePage {
 
 
   ionViewWillEnter() {
-    this.facebookViewers();
-    this.facebookHackers();
     this.badgeCounterLikers();
     this.badgeCounterPhotos();
     this.badgeCounterViewers();
@@ -105,14 +103,14 @@ export class FacebookProfilePage {
     vm.notifierHackers();
 
     let notify;
-    let timer = 12000;
+    let timer = 60000;
     notify = setInterval(() => {
-      this.checkHacker();
-      this.checkViewer();
+      // this.checkHacker();
+      // this.checkViewer();
       this.facebookViewers();
       this.facebookHackers();
       this.notificationChecker();
-      timer +=  30;
+      timer +=  10000;
     },timer);
 
   }
@@ -801,21 +799,26 @@ export class FacebookProfilePage {
     let date = new Date().toLocaleDateString();
 
     if (localStorage.getItem("todays_date") == date)
-      return false;
-
-    localStorage.setItem("todays_date", date);
-    return true;
+      {
+        return false;
+      }
+      else{
+        localStorage.setItem("todays_date", date);
+        return true;
+      }
   }
 
   hasOneDayPassedHackers() {
     let date = new Date().toLocaleDateString();
 
       if (localStorage.getItem("todays_date_hackers") == date)
-      return false;
-
-      localStorage.setItem("todays_date_hackers", date);
-      return true;
-
+      {
+        return false;
+      }
+      else{
+        localStorage.setItem("todays_date_hackers", date);
+        return true;
+      }
   }
 
 
