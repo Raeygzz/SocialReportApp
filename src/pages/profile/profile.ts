@@ -23,28 +23,33 @@ import { InstagramHackersPage } from '../instagram-hackers/instagram-hackers';
 export class ProfilePage {
 
   token: any;
-  userReady: boolean = false;
   followerList: any;
   mediaInfoArray: any = [];
   loader: any;
   name: string = null;
-  url: string = null;
-  youLikeMostCount:number = 0;
-  youLikeMostBadge:boolean = false;
-  likesYouMostCount:number = 0;
-  likesYouMostBadge:boolean = false;
-  whoViewedYourProfileCount:number = 0;
-  whoViewedYourProfileBadge:boolean = false;
+  url: String = './assets/imgs/no-image.jpeg';
+  urlPhoto: String = './assets/imgs/no-image.jpeg';
+  urlViewer: String = './assets/imgs/no-image.jpeg';
+  urlLiker: String = './assets/imgs/no-image.jpeg';
+  urlLove: String = './assets/imgs/no-image.jpeg';
+  urlLaugh: String = './assets/imgs/no-image.jpeg';
+  urlHacker: String = './assets/imgs/no-image.jpeg';
+  youLikeMostCount: number = 0;
+  youLikeMostBadge: boolean = false;
+  likesYouMostCount: number = 0;
+  likesYouMostBadge: boolean = false;
+  whoViewedYourProfileCount: number = 0;
+  whoViewedYourProfileBadge: boolean = false;
   whoHackedYourProfileFbCount: number = 0;
   whoHackedYourProfileFbBadge: boolean = false;
-  placeHolder:String = "../../assets/imgs/no-image.jpeg";
+  placeHolder: String = "./assets/imgs/no-image.jpeg";
 
   constructor(
-    public navCtrl: NavController, 
-    public UserService: UserService, 
-    public loading: LoadingController, 
-    private nativeStorage: NativeStorage, 
-    public actionSheetCtrl: ActionSheetController, 
+    public navCtrl: NavController,
+    public UserService: UserService,
+    public loading: LoadingController,
+    private nativeStorage: NativeStorage,
+    public actionSheetCtrl: ActionSheetController,
     public modalCtrl: ModalController,
     public toastCtrl: ToastController,
     private instagramService: InstagramService,
@@ -64,7 +69,7 @@ export class ProfilePage {
     toast.present();
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     let vm = this;
     // this.instagramViewers();
     // this.instagramHackers();
@@ -74,48 +79,42 @@ export class ProfilePage {
     this.badgeCounterHackers();
 
     this.nativeStorage.getItem("inToken")
-    .then(
+      .then(
       data => {
         this.token = data;
         this.UserService.verifyToken(data)
-        .then((response: any) => {
-          this.name = response.data.full_name;
-          this.url = response.data.profile_picture;
-          this.userReady = true;
-        });
+          .then((response: any) => {
+            this.name = response.data.full_name;
+            this.url = response.data.profile_picture;
+          });
       },
       error => {
-        // this.navCtrl.setRoot(TabsPage,{
-        //   "tab":"instagram"
-        // });
         vm.logout();
       }
-    ).catch(()=>{
-      // vm.logout();
-    });
+      ).catch(() => {
+        // vm.logout();
+      });
 
-    // this.apiCall();
     let badge;
     badge = setInterval(() => {
       this.apiCall();
-    },1000000);
+    }, 1000000);
 
     let notify;
     let timer = 60000;
     notify = setInterval(() => {
-      // this.checkHacker();
-      // this.checkViewer();
       this.instagramViewers();
       this.instagramHackers();
       this.notificationChecker();
       timer += 10000;
-    },timer);
+    }, timer);
 
     vm.notifier();
     vm.notifierHackers();
+
   }
 
-  notificationChecker(){
+  notificationChecker() {
     this.instagramViewers();
     this.instagramHackers();
     this.badgeCounterLikers();
@@ -124,47 +123,94 @@ export class ProfilePage {
     this.badgeCounterHackers();
   }
 
-  checkViewer(){
+  dbHackerUrl() {
+    let db = this.sqliteService.getDbInstance();
     let env = this;
-    let db = env.sqliteService.getDbInstance();
-    db.executeSql('Select * FROM InstagramViewers', {})
+
+    db.executeSql('Select * from InstagramHackers order by date DESC Limit 1', [])
       .then((data) => {
-      if (data.rows.length == 0) {
-      localStorage.removeItem("todays_date_in")
-      }
-    })
+        if (data.rows.length > 0) {
+          let obj = data.rows.item(0);
+          env.urlHacker = obj.picture;
+        }
+        else {
+          env.urlHacker = env.placeHolder;
+        }
+      }).catch((e) => {
+        env.urlHacker = env.placeHolder;
+      })
   }
 
-  checkHacker(){
+  dbLikerUrl() {
+    let db = this.sqliteService.getDbInstance();
     let env = this;
-    let db = env.sqliteService.getDbInstance();
-    db.executeSql('Select * FROM InstagramHackers', {})
+
+    db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM InstagramLikers GROUP BY name ORDER BY user_count DESC Limit 1', [])
       .then((data) => {
-      if (data.rows.length == 0) {
-      localStorage.removeItem("todays_date_hackersIn")
-      }
-    })
+        if (data.rows.length > 0) {
+          let obj = data.rows.item(0);
+          env.urlLiker = obj.picture;
+        }
+        else {
+          env.urlLiker = env.placeHolder;
+        }
+      }).catch((e) => {
+        env.urlLiker = env.placeHolder;
+      })
   }
 
-  notifier(){
-    let timer = this.getRandomInt(0,9000000);
+  dbPhotoUrl() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+    db.executeSql('Select InstagramPhotos.id, InstagramPhotos.source, count(InstagramLikers.id) as likesCount from InstagramPhotos LEFT JOIN InstagramLikers ON InstagramPhotos.id = InstagramLikers.image_id Group By InstagramLikers.image_id ORDER BY likesCount DESC Limit 1', {})
+      .then((data) => {
+        if (data.rows.length > 0) {
+          let obj = data.rows.item(0);
+          env.urlPhoto = obj.source;
+        }
+        else {
+          env.urlPhoto = env.placeHolder;
+        }
+      })
+      .catch(e => {
+        env.urlPhoto = env.placeHolder;
+      });
+  }
+
+  dbViewerUrl() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+    db.executeSql('Select * from InstagramViewers order by date DESC Limit 1', [])
+      .then((data) => {
+        if (data.rows.length > 0) {
+          let obj = data.rows.item(0);
+          env.urlViewer = obj.picture;
+        }
+        else {
+          env.urlViewer = env.placeHolder;
+        }
+      }).catch((e) => {
+        env.urlViewer = env.placeHolder;
+      })
+  }
+
+  notifier() {
+    let timer = this.getRandomInt(0, 9000000);
     let vm = this;
-    // let timer = 10000;
     let viewer;
-    console.log("timer initial", timer / 1000);
 
     let viewerFunctionRandom = function (timer) {
       viewer = setInterval(() => {
-        console.log(JSON.parse(localStorage.getItem("todaysViewersIn")));
         let tempArray = JSON.parse(localStorage.getItem("todaysViewersIn"));
         if (tempArray.length > 0)
           tempArray.shift();
-        console.log(tempArray);
         localStorage.setItem("todaysViewersIn", JSON.stringify(tempArray));
         clearInterval(viewer);
 
         if (tempArray.length > 0) {
-          viewerFunctionRandom(vm.getRandomInt(0,8000000));
+          viewerFunctionRandom(vm.getRandomInt(0, 8000000));
           // viewerFunctionRandom(10000);
         }
         else {
@@ -175,9 +221,9 @@ export class ProfilePage {
       }, timer);
     }
 
-    if(JSON.parse(localStorage.getItem("todaysViewersIn")) != null){
-    if (JSON.parse(localStorage.getItem("todaysViewersIn")).length > 0)
-      viewerFunctionRandom(timer);
+    if (JSON.parse(localStorage.getItem("todaysViewersIn")) != null) {
+      if (JSON.parse(localStorage.getItem("todaysViewersIn")).length > 0)
+        viewerFunctionRandom(timer);
     }
   }
 
@@ -186,15 +232,12 @@ export class ProfilePage {
     let vm = this;
     // let timer = 10000;
     let hacker;
-    console.log("timer initial", timer / 1000);
 
     let hackerFunctionRandom = function (timer) {
       hacker = setInterval(() => {
-        console.log(JSON.parse(localStorage.getItem("todaysHackersIn")));
         let tempArray = JSON.parse(localStorage.getItem("todaysHackersIn"));
         if (tempArray.length > 0)
           tempArray.shift();
-        console.log(tempArray);
         localStorage.setItem("todaysHackersIn", JSON.stringify(tempArray));
         clearInterval(hacker);
 
@@ -213,23 +256,23 @@ export class ProfilePage {
 
     if (JSON.parse(localStorage.getItem("todaysHackersIn")) != null) {
       if (JSON.parse(localStorage.getItem("todaysHackersIn")).length > 0)
-      hackerFunctionRandom(timer);
+        hackerFunctionRandom(timer);
     }
 
   }
 
-  apiCall(){
+  apiCall() {
     let env = this;
     let db = env.sqliteService.getDbInstance();
     db.executeSql('Select * FROM InstagramPhotos', {})
       .then((data) => {
-      if (data.rows.length > 0) {
-      env.instagramService.likesYouMost(false);
-      }
-      else{
-      env.instagramService.likesYouMost(true);
-      }
-    })
+        if (data.rows.length > 0) {
+          env.instagramService.likesYouMost(false);
+        }
+        else {
+          env.instagramService.likesYouMost(true);
+        }
+      })
   }
 
   logout() {
@@ -244,98 +287,98 @@ export class ProfilePage {
       () => {
         let db = env.sqliteService.getDbInstance();
         db.executeSql('Delete FROM InstagramLikers', {})
-        .then((data) => {
-          console.log("FacebookLikers table deleted")
-        });
+          .then((data) => {
+          });
         db.executeSql('Delete FROM InstagramPhotos', {})
-        .then((data) => {
-          console.log("FacebookPhotos table deleted")
-        });
+          .then((data) => {
+          });
         db.executeSql('Delete FROM InstagramViewers', {})
-        .then((data) => {
-          console.log("InstagramViewers table deleted")
-        });
+          .then((data) => {
+          });
         db.executeSql('Delete FROM InstagramHackers', {})
-        .then((data) => {
-          console.log("InstagramHackers table deleted")
-        });
-        env.navCtrl.popAll().then(function(data){
-          env.navCtrl.setRoot(TabsPage,{
-            "tab":"instagram"
+          .then((data) => {
+          });
+        env.navCtrl.popAll().then(function (data) {
+          env.navCtrl.setRoot(TabsPage, {
+            "tab": "instagram"
           }).catch(() => {
 
           });
         }).catch(() => {
-                
+
         });
       },
-      error => {}
+      error => { }
     );
   }
 
-  whoViewedYourProfile(){
-    if(localStorage.getItem("online") == "false"){
+  whoViewedYourProfile() {
+    if (localStorage.getItem("online") == "false") {
       this.presentToast();
       return;
     }
 
     this.nativeStorage.getItem('whoViewedInstagramProfile')
-    .then(
+      .then(
       data => {
-          this.inViewers();
+        this.inViewers();
       },
       error => {
         // this.inViewers();
         this.presentModal();
       }
-    );
+      );
   }
 
-  badgeCounterPhotos(){
+  badgeCounterPhotos() {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT Distinct(id) as badgeCount FROM InstagramPhotos where viewFlag=?', [0])
       .then((data) => {
-        console.log("InstaPhotos Count",data.rows.length);
         this.youLikeMostCount = data.rows.length;
-        if(this.youLikeMostCount>0)
-        this.youLikeMostBadge = true;
+        if (this.youLikeMostCount > 0){
+          this.youLikeMostBadge = true;
+          if(this.urlPhoto == this.placeHolder){
+            this.dbPhotoUrl();
+          }
+        }
         else
-        this.youLikeMostBadge = false;
+          this.youLikeMostBadge = false;
       })
-      .catch((e)=>{
-        console.log(e);
+      .catch((e) => {
       });
   }
 
-  badgeCounterLikers(){
+  badgeCounterLikers() {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM InstagramLikers where viewFlag=? GROUP BY name', [0])
       .then((data) => {
-        console.log("InstaLikers Count",data.rows.length);
         this.likesYouMostCount = data.rows.length;
-        if(this.likesYouMostCount>0)
-        this.likesYouMostBadge = true;
+        if (this.likesYouMostCount > 0){
+            this.likesYouMostBadge = true;
+            if(this.urlLiker == this.placeHolder)
+            this.dbLikerUrl();
+          }
         else
-        this.likesYouMostBadge = false;
+          this.likesYouMostBadge = false;
       })
-      .catch((e)=>{
-        console.log(e);
+      .catch((e) => {
       });
   }
 
-  badgeCounterViewers(){
+  badgeCounterViewers() {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT * FROM InstagramViewers where viewFlag=? GROUP BY name', [0])
       .then((data) => {
-        console.log("InstagramViewers Count",data.rows.length);
         this.whoViewedYourProfileCount = data.rows.length;
-        if(this.whoViewedYourProfileCount>0)
-        this.whoViewedYourProfileBadge = true;
+        if (this.whoViewedYourProfileCount > 0){
+          this.whoViewedYourProfileBadge = true;
+          if(this.urlViewer == this.placeHolder)
+          this.dbViewerUrl();
+        }
         else
-        this.whoViewedYourProfileBadge = false;
+          this.whoViewedYourProfileBadge = false;
       })
-      .catch((e)=>{
-        console.log(e);
+      .catch((e) => {
       });
   }
 
@@ -343,15 +386,16 @@ export class ProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT * FROM InstagramHackers where  viewFlag=? GROUP BY name', [0])
       .then((data) => {
-        console.log("FacebookViewers Count", data.rows.length);
         this.whoHackedYourProfileFbCount = data.rows.length;
-        if (this.whoHackedYourProfileFbCount > 0)
+        if (this.whoHackedYourProfileFbCount > 0){
           this.whoHackedYourProfileFbBadge = true;
+          if (this.urlHacker == this.placeHolder) 
+            this.dbHackerUrl();
+        }
         else
           this.whoHackedYourProfileFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
       });
   }
 
@@ -379,7 +423,7 @@ export class ProfilePage {
                 likers: dataArray,
                 dates: dates
               });
-            }else{
+            } else {
               this.navCtrl.push(InstagramHackersPage, {
                 likers: [],
                 dates: []
@@ -389,7 +433,6 @@ export class ProfilePage {
 
       })
       .catch(e => {
-        console.log(e);
       });
   }
 
@@ -411,7 +454,6 @@ export class ProfilePage {
 
           if (dataArray.length > 0) {
             let lengthHackers = env.getRandomInt(1, 5);
-            console.log(lengthHackers);
 
             let mySet = new Set();
             for (let i = 0; i < lengthHackers; i++) {
@@ -421,7 +463,6 @@ export class ProfilePage {
               }
             }
             let randomArray = Array.from(mySet);
-            console.log(randomArray);
             let hackers = [];
             for (let i = 0; i < randomArray.length; i++) {
               hackers.push(dataArray[randomArray[i]]);
@@ -451,7 +492,7 @@ export class ProfilePage {
           }
 
         })
-        .catch(e => console.log(e));
+        .catch(e => {});
     }
 
   }
@@ -468,232 +509,210 @@ export class ProfilePage {
       return;
     db.executeSql('Insert into InstagramHackers(id,name,picture,image_id,unique_id,viewFlag,date) values(?,?,?,?,?,?,?)', [hackers[0].id, hackers[0].name, hackers[0].picture, hackers[0].image_id, hackers[0].unique_id, hackers[0].viewFlag, hackers[0].date])
       .then(() => {
-        console.log('Inserted hacker in InstagramHackers Table');
 
         let notificationArray = [];
 
-        // this.nativeStorage.getItem('whoViewedFbProfile')
-        //   .then(
-        //   data => {
-            notificationArray.push({ "id": index, "text": hackers[0].name + ' intentó hackear tu instagram perfil.' });
-            env.notifications2(notificationArray);
-            env.badgeCounterHackers();
-            // if (index == 0)
-              env.notifierHackers();
-          // },
-          // error => {
-          //   notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' viewed your picture.' });
-          //   env.notifications(notificationArray);
-          //   env.badgeCounterViewers();
-          //   if (index == 0)
-          //     env.notifier();
-          // }
-          // );
+        notificationArray.push({ "id": index, "text": hackers[0].name + ' intentó hackear tu instagram perfil.' });
+        env.notifications2(notificationArray);
+        env.badgeCounterHackers();
+        env.notifierHackers();
       })
       .catch(e => {
-        console.log(e);
       });
   }
 
   hasOneDayPassedHackers() {
     let date = new Date().toLocaleDateString();
 
-    if (localStorage.getItem("todays_date_hackersIn") == date)
-      {
-        return false;
-      }
-      else{
+    if (localStorage.getItem("todays_date_hackersIn") == date) {
+      return false;
+    }
+    else {
 
-        localStorage.setItem("todays_date_hackersIn", date);
-        return true;
-    
-      }
+      localStorage.setItem("todays_date_hackersIn", date);
+      return true;
+
+    }
 
   }
 
-  inViewers(){
+  inViewers() {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('Select * from InstagramViewers', [])
-    .then((data) => {
-      let dataArray = [];
-      if (data.rows.length > 0) {
-        let length = data.rows.length;
-        for (let i = 0; i < length; i++) {
-          dataArray.push(data.rows.item(i));
-        }
-      }
-
-      let dates = [];
-      db.executeSql('Select distinct(date) from InstagramViewers', [])
-      .then((dataDate) => {
-        if (dataDate.rows.length > 0) {
-          let length = dataDate.rows.length;
-          for (let i = 0; i < length; i++) {
-            dates.push(dataDate.rows.item(i));
-          }
-          this.navCtrl.push(WhoViewedProfileInPage, {
-            likers: dataArray,
-            dates: dates
-          });
-        }else{
-          this.navCtrl.push(WhoViewedProfileInPage, {
-            likers: [],
-            dates: []
-          }); 
-        }
-      });
-
-    })
-    .catch(e => {
-      console.log(e);
-    });
-  }
-
-  instagramViewers(){
-    let db = this.sqliteService.getDbInstance();
-    let env = this;
-
-    if(env.hasOneDayPassed()){
-      localStorage.removeItem("todaysViewersIn");
-      localStorage.removeItem("viewerLengthIn");
-      db.executeSql('SELECT COUNT(id) as user_count, id, name, picture, image_id, unique_id FROM InstagramLikers GROUP BY name ORDER BY user_count DESC', {})
       .then((data) => {
         let dataArray = [];
         if (data.rows.length > 0) {
-          for (let i = 0; i < data.rows.length; i++) {
+          let length = data.rows.length;
+          for (let i = 0; i < length; i++) {
             dataArray.push(data.rows.item(i));
           }
         }
 
-        if(dataArray.length>0){
-          let lengthViewers = env.getRandomInt(1,10);
-          console.log(lengthViewers);
-         
-          let mySet = new Set();
-          for(let i=0;i<lengthViewers;i++){
-            mySet.add(env.getRandomInt(0,dataArray.length-1));
-            if(mySet.size < i+1){
-              i--;
-            } 
-          }
-          let randomArray = Array.from(mySet);
-          console.log(randomArray);
-          let viewers = [];
-          for(let i=0;i<randomArray.length;i++){
-            viewers.push(dataArray[randomArray[i]]);
-          }
-  
-          let length = viewers.length;
-          let date = new Date().toLocaleDateString();
-
-          let viewerDataObj = [];
-          for (let i=0; i<length; i++) {
-
-            viewerDataObj.push({
-              "id": viewers[i].id,
-              "name": viewers[i].name,
-              "picture": viewers[i].picture, 
-              "image_id": viewers[i].image_id,
-              "unique_id": viewers[i].unique_id,
-              "viewFlag": 0,
-              "date": date
-            });
-
-          }
-          localStorage.setItem("viewerLengthIn",JSON.stringify(viewerDataObj.length));
-          localStorage.setItem("todaysViewersIn",JSON.stringify(viewerDataObj));
-
-          env.viewersDbInsert();
-        }
+        let dates = [];
+        db.executeSql('Select distinct(date) from InstagramViewers', [])
+          .then((dataDate) => {
+            if (dataDate.rows.length > 0) {
+              let length = dataDate.rows.length;
+              for (let i = 0; i < length; i++) {
+                dates.push(dataDate.rows.item(i));
+              }
+              this.navCtrl.push(WhoViewedProfileInPage, {
+                likers: dataArray,
+                dates: dates
+              });
+            } else {
+              this.navCtrl.push(WhoViewedProfileInPage, {
+                likers: [],
+                dates: []
+              });
+            }
+          });
 
       })
-      .catch(e => console.log(e));
+      .catch(e => {
+      });
+  }
+
+  instagramViewers() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+    if (env.hasOneDayPassed()) {
+      localStorage.removeItem("todaysViewersIn");
+      localStorage.removeItem("viewerLengthIn");
+      db.executeSql('SELECT COUNT(id) as user_count, id, name, picture, image_id, unique_id FROM InstagramLikers GROUP BY name ORDER BY user_count DESC', {})
+        .then((data) => {
+          let dataArray = [];
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              dataArray.push(data.rows.item(i));
+            }
+          }
+
+          if (dataArray.length > 0) {
+            let lengthViewers = env.getRandomInt(1, 10);
+
+            let mySet = new Set();
+            for (let i = 0; i < lengthViewers; i++) {
+              mySet.add(env.getRandomInt(0, dataArray.length - 1));
+              if (mySet.size < i + 1) {
+                i--;
+              }
+            }
+            let randomArray = Array.from(mySet);
+            let viewers = [];
+            for (let i = 0; i < randomArray.length; i++) {
+              viewers.push(dataArray[randomArray[i]]);
+            }
+
+            let length = viewers.length;
+            let date = new Date().toLocaleDateString();
+
+            let viewerDataObj = [];
+            for (let i = 0; i < length; i++) {
+
+              viewerDataObj.push({
+                "id": viewers[i].id,
+                "name": viewers[i].name,
+                "picture": viewers[i].picture,
+                "image_id": viewers[i].image_id,
+                "unique_id": viewers[i].unique_id,
+                "viewFlag": 0,
+                "date": date
+              });
+
+            }
+            localStorage.setItem("viewerLengthIn", JSON.stringify(viewerDataObj.length));
+            localStorage.setItem("todaysViewersIn", JSON.stringify(viewerDataObj));
+
+            env.viewersDbInsert();
+          }
+
+        })
+        .catch(e => {});
     }
 
   }
 
-  viewersDbInsert(){
+  viewersDbInsert() {
     let env = this;
     let db = this.sqliteService.getDbInstance();
-    if(localStorage.getItem("todaysViewersIn") == undefined || localStorage.getItem("viewerLengthIn") == undefined){
+    if (localStorage.getItem("todaysViewersIn") == undefined || localStorage.getItem("viewerLengthIn") == undefined) {
       return;
     }
     let viewers = JSON.parse(localStorage.getItem("todaysViewersIn"));
     let index = JSON.parse(localStorage.getItem("viewerLengthFb")) - JSON.parse(localStorage.getItem("todaysViewersIn")).length;
-    if(viewers.length==0)
-    return;
-    db.executeSql('Insert into InstagramViewers(id,name,picture,image_id,unique_id,viewFlag,date) values(?,?,?,?,?,?,?)', [viewers[0].id, viewers[0].name, viewers[0].picture, viewers[0].image_id, viewers[0].unique_id,viewers[0].viewFlag, viewers[0].date])
-    .then(() => {
-        console.log('Inserted Liker in InstagramViewers Table');
-        
+    if (viewers.length == 0)
+      return;
+    db.executeSql('Insert into InstagramViewers(id,name,picture,image_id,unique_id,viewFlag,date) values(?,?,?,?,?,?,?)', [viewers[0].id, viewers[0].name, viewers[0].picture, viewers[0].image_id, viewers[0].unique_id, viewers[0].viewFlag, viewers[0].date])
+      .then(() => {
+
         let notificationArray = [];
 
         this.nativeStorage.getItem('whoViewedInstagramProfile')
-        .then(
+          .then(
           data => {
-            notificationArray.push({"id":index,"text":viewers[0].name+' visto tu instagram perfil.'})
+            notificationArray.push({ "id": index, "text": viewers[0].name + ' visto tu instagram perfil.' })
             env.notifications(notificationArray);
             env.badgeCounterViewers();
-            if(index == 0)
-            env.notifier();
+            if (index == 0)
+              env.notifier();
           },
           error => {
-            notificationArray.push({"id":index,"text":env.nameEnc(viewers[0].name)+' visto tu instagram perfil.'})
+            notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' visto tu instagram perfil.' })
             env.notifications(notificationArray);
             env.badgeCounterViewers();
-            if(index == 0)
-            env.notifier();
+            if (index == 0)
+              env.notifier();
           }
-        );
+          );
 
 
-    })
-    .catch(e => {
-      console.log(e);
-    });
+      })
+      .catch(e => {
+      });
   }
 
   nameEnc(name) {
     let encName = "";
     let arr = name.split(' ');
     let tempArray = [];
-    console.log(arr);
     for (let i = 0; i < arr.length; i++) {
       tempArray.push(arr[i].substring(0, arr[i].length - 2).replace(/\S/gi, '*') + arr[i].substring(arr[i].length - 2, arr[i].length));
     }
     for (let i = 0; i < tempArray.length; i++) {
       encName += tempArray[i] + ' ';
     }
-    console.log(encName.slice(0, -1));
     return encName.slice(0, -1);
   }
 
-  notifications(array){
+  notifications(array) {
     this.localNotifications.schedule(array);
+    this.notificationChecker();
   }
 
   notifications2(array) {
     this.localNotifications2.schedule(array);
+    this.notificationChecker();
   }
 
 
-  hasOneDayPassed(){
+  hasOneDayPassed() {
     let date = new Date().toLocaleDateString();
-  
-    if( localStorage.getItem("todays_date_in") == date ) 
-       {
-        return false;
-       }
-  else{
-    localStorage.setItem("todays_date_in",date);
-    return true;
-  }
+
+    if (localStorage.getItem("todays_date_in") == date) {
+      return false;
+    }
+    else {
+      localStorage.setItem("todays_date_in", date);
+      return true;
+    }
 
   }
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+  }
 
   presentModal() {
     let modal = this.modalCtrl.create(InAppPurchaseInstagramPage);
@@ -701,7 +720,7 @@ export class ProfilePage {
   }
 
   likesYouMost() {
-  if(localStorage.getItem("online") == "false"){
+    if (localStorage.getItem("online") == "false") {
       this.presentToast();
       return;
     }
@@ -709,21 +728,21 @@ export class ProfilePage {
   }
 
   mostLikedPhotos() {
-    if(localStorage.getItem("online") == "false"){
-        this.presentToast();
-        return;
-      }
-      // this.instagramService.likesYouMost();
-      this.dbPhotos();
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
     }
+    // this.instagramService.likesYouMost();
+    this.dbPhotos();
+  }
 
-    dbPhotos() {
-      let db = this.sqliteService.getDbInstance();
-      let env = this;
-      let loader = this.loading.create({
-        content: 'Loading..',
-      });
-      loader.present().then(() => { 
+  dbPhotos() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+    let loader = this.loading.create({
+      content: 'Loading..',
+    });
+    loader.present().then(() => {
       // db.executeSql('Select * from InstagramPhotos order by likesCount DESC', {})
       db.executeSql('Select InstagramPhotos.id, InstagramPhotos.source, count(InstagramLikers.id) as likesCount from InstagramPhotos LEFT JOIN InstagramLikers ON InstagramPhotos.id = InstagramLikers.image_id Group By InstagramLikers.image_id ORDER BY likesCount DESC', {})
         .then((data) => {
@@ -733,7 +752,6 @@ export class ProfilePage {
               dataArray.push(data.rows.item(i));
             }
           }
-          console.log("......Photos ", dataArray);
           loader.dismiss();
           env.navCtrl.push(MyLikesPage, {
             mostLikedPhotosArray: dataArray
@@ -741,19 +759,17 @@ export class ProfilePage {
         })
         .catch(e => {
           loader.dismiss();
-          console.log(e);
         });
-      });
-    }
-  
-    dbLikers() {
-      let db = this.sqliteService.getDbInstance();
-      let env = this;
-      let loader = this.loading.create({
-        content: 'Loading..',
-      });
-      loader.present().then(() => {  
-        // db.executeSql('SELECT * FROM InstagramLikers', {})
+    });
+  }
+
+  dbLikers() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+    let loader = this.loading.create({
+      content: 'Loading..',
+    });
+    loader.present().then(() => {
       db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM InstagramLikers GROUP BY name ORDER BY user_count DESC', {})
         .then((data) => {
           let dataArray = [];
@@ -762,15 +778,14 @@ export class ProfilePage {
               dataArray.push(data.rows.item(i));
             }
           }
-          console.log("......>>>><<<<<Instagram lIKERS", dataArray);
           loader.dismiss();
           env.navCtrl.push(YourLikersPage, {
             likers: dataArray
           });
         })
-        .catch(e => console.log(e));
-            });
-    }
+        .catch(e => {});
+    });
+  }
 
 
   presentActionSheet() {
@@ -781,9 +796,9 @@ export class ProfilePage {
           text: 'Logout',
           role: 'destructive',
           handler: () => {
-            this.logout(); 
+            this.logout();
           }
-        },{
+        }, {
           text: 'Cancel',
           role: 'cancel',
           handler: () => {
@@ -796,7 +811,7 @@ export class ProfilePage {
   }
 
   errorHandler(event) {
-    if(event)
-    event.target.src = "../../assets/imgs/no-image.jpeg";
+    if (event)
+      event.target.src = "./assets/imgs/no-image.jpeg";
   }
 }

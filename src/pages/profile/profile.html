@@ -16,7 +16,7 @@
     <ion-card-content class="instagramHome">
       <br>
       <ion-thumbnail style="padding-left:35%;padding-right:35%;">
-        <img [src]="url" *ngIf='userReady' height="80px" width="45px" style="border:2px solid white;border-radius:15px" (error)="errorHandler(event) ">
+        <img [src]="url" height="80px" width="45px" style="border:2px solid white;border-radius:15px" (error)="errorHandler(event) ">
       </ion-thumbnail>
       <br>
     </ion-card-content>
@@ -30,7 +30,7 @@
     <ion-item (click)="whoViewedYourProfile()">
       <ion-avatar item-start>
           <ion-badge *ngIf="whoViewedYourProfileBadge" color="danger">+{{whoViewedYourProfileCount}}</ion-badge>
-        <img *ngIf='userReady' [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlViewer" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2>¿Quien ha visto tu perfil?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -38,7 +38,7 @@
     <ion-item (click)="likesYouMost()">
       <ion-avatar item-start>
           <ion-badge *ngIf="likesYouMostBadge" color="danger">+{{likesYouMostCount}}</ion-badge>
-        <img *ngIf='userReady' [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlLiker" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2>¿A quién le gustas más?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -46,7 +46,7 @@
     <ion-item (click)="mostLikedPhotos()">
       <ion-avatar item-start>
           <ion-badge *ngIf="youLikeMostBadge" color="danger">+{{youLikeMostCount}}</ion-badge>
-        <img *ngIf='userReady' [src]="url" (error)="errorHandler(event)">
+        <img [src]="urlPhoto" (error)="errorHandler(event)">
       </ion-avatar>
       <h2>Fotos más gustadas</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -54,7 +54,7 @@
     <ion-item (click)="inHackers()">
       <ion-avatar item-start>
           <ion-badge *ngIf="whoHackedYourProfileFbBadge" color="danger">+{{whoHackedYourProfileFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlHacker" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2>¿Quién intentó hackear tu perfil?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
