@@ -13,7 +13,9 @@ import { InstagramService } from '../../providers/instagram-service';
 import { SqliteService } from '../../providers/sqlite';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { InstagramHackersPage } from '../instagram-hackers/instagram-hackers';
-
+import { InAppPurchaseInPhotosPage } from '../in-app-purchase-in-photos/in-app-purchase-in-photos';
+import { InAppPurchaseInLikersPage } from '../in-app-purchase-in-likers/in-app-purchase-in-likers';
+import { InAppPurchaseInCrushPage } from '../in-app-purchase-in-crush/in-app-purchase-in-crush';
 
 @IonicPage()
 @Component({
@@ -86,6 +88,8 @@ export class ProfilePage {
           .then((response: any) => {
             this.name = response.data.full_name;
             this.url = response.data.profile_picture;
+          }).catch(()=>{
+
           });
       },
       error => {
@@ -272,6 +276,8 @@ export class ProfilePage {
         else {
           env.instagramService.likesYouMost(true);
         }
+      }).catch(()=>{
+
       })
   }
 
@@ -309,7 +315,9 @@ export class ProfilePage {
         });
       },
       error => { }
-    );
+    ).catch(()=>{
+      
+    });
   }
 
   whoViewedYourProfile() {
@@ -325,7 +333,7 @@ export class ProfilePage {
       },
       error => {
         // this.inViewers();
-        this.presentModal();
+        this.presentModal(InAppPurchaseInstagramPage);
       }
       );
   }
@@ -400,40 +408,53 @@ export class ProfilePage {
   }
 
   inHackers() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
-    db.executeSql('Select * from InstagramHackers', [])
-      .then((data) => {
-        let dataArray = [];
-        if (data.rows.length > 0) {
-          let length = data.rows.length;
-          for (let i = 0; i < length; i++) {
-            dataArray.push(data.rows.item(i));
-          }
-        }
 
-        let dates = [];
-        db.executeSql('Select distinct(date) from InstagramHackers', [])
-          .then((dataDate) => {
-            if (dataDate.rows.length > 0) {
-              let length = dataDate.rows.length;
-              for (let i = 0; i < length; i++) {
-                dates.push(dataDate.rows.item(i));
-              }
-              this.navCtrl.push(InstagramHackersPage, {
-                likers: dataArray,
-                dates: dates
-              });
-            } else {
-              this.navCtrl.push(InstagramHackersPage, {
-                likers: [],
-                dates: []
-              });
+    this.nativeStorage.getItem('prod_in_crush')
+      .then(
+      data => {
+        db.executeSql('Select * from InstagramHackers', [])
+        .then((data) => {
+          let dataArray = [];
+          if (data.rows.length > 0) {
+            let length = data.rows.length;
+            for (let i = 0; i < length; i++) {
+              dataArray.push(data.rows.item(i));
             }
-          });
-
-      })
-      .catch(e => {
-      });
+          }
+  
+          let dates = [];
+          db.executeSql('Select distinct(date) from InstagramHackers', [])
+            .then((dataDate) => {
+              if (dataDate.rows.length > 0) {
+                let length = dataDate.rows.length;
+                for (let i = 0; i < length; i++) {
+                  dates.push(dataDate.rows.item(i));
+                }
+                this.navCtrl.push(InstagramHackersPage, {
+                  likers: dataArray,
+                  dates: dates
+                });
+              } else {
+                this.navCtrl.push(InstagramHackersPage, {
+                  likers: [],
+                  dates: []
+                });
+              }
+            });
+  
+        })
+        .catch(e => {
+        });
+      },
+      error => {
+        this.presentModal(InAppPurchaseInCrushPage);
+      }
+      );
   }
 
   instagramHackers() {
@@ -512,10 +533,22 @@ export class ProfilePage {
 
         let notificationArray = [];
 
-        notificationArray.push({ "id": index, "text": hackers[0].name + ' intentó hackear tu instagram perfil.' });
-        env.notifications2(notificationArray);
-        env.badgeCounterHackers();
-        env.notifierHackers();
+        this.nativeStorage.getItem('prod_in_crush')
+          .then(
+          data => {
+            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana' });
+            env.notifications2(notificationArray);
+            env.badgeCounterHackers();
+            env.notifierHackers();
+          },
+          error => {
+              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana' });
+              env.notifications2(notificationArray);
+              env.badgeCounterHackers();
+                env.notifierHackers();
+          }
+          );
+
       })
       .catch(e => {
       });
@@ -714,8 +747,8 @@ export class ProfilePage {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  presentModal() {
-    let modal = this.modalCtrl.create(InAppPurchaseInstagramPage);
+  presentModal(Page) {
+    let modal = this.modalCtrl.create(Page);
     modal.present();
   }
 
@@ -737,54 +770,84 @@ export class ProfilePage {
   }
 
   dbPhotos() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      // db.executeSql('Select * from InstagramPhotos order by likesCount DESC', {})
-      db.executeSql('Select InstagramPhotos.id, InstagramPhotos.source, count(InstagramLikers.id) as likesCount from InstagramPhotos LEFT JOIN InstagramLikers ON InstagramPhotos.id = InstagramLikers.image_id Group By InstagramLikers.image_id ORDER BY likesCount DESC', {})
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
-            }
-          }
-          loader.dismiss();
-          env.navCtrl.push(MyLikesPage, {
-            mostLikedPhotosArray: dataArray
-          });
-        })
-        .catch(e => {
+
+    this.nativeStorage.getItem('prod_in_photos')
+      .then(
+      data => {
+        loader.present().then(() => {
+          // db.executeSql('Select * from InstagramPhotos order by likesCount DESC', {})
+          db.executeSql('Select InstagramPhotos.id, InstagramPhotos.source, count(InstagramLikers.id) as likesCount from InstagramPhotos LEFT JOIN InstagramLikers ON InstagramPhotos.id = InstagramLikers.image_id Group By InstagramLikers.image_id ORDER BY likesCount DESC', {})
+            .then((data) => {
+              let dataArray = [];
+              if (data.rows.length > 0) {
+                for (let i = 0; i < data.rows.length; i++) {
+                  dataArray.push(data.rows.item(i));
+                }
+              }
+              loader.dismiss();
+              env.navCtrl.push(MyLikesPage, {
+                mostLikedPhotosArray: dataArray
+              });
+            })
+            .catch(e => {
+              loader.dismiss();
+            });
+        }).catch(()=>{
           loader.dismiss();
         });
-    });
+      },
+      error => {
+        this.presentModal(InAppPurchaseInPhotosPage);
+      }
+      );
   }
 
   dbLikers() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM InstagramLikers GROUP BY name ORDER BY user_count DESC', {})
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
-            }
-          }
+
+    this.nativeStorage.getItem('prod_in_likers')
+      .then(
+      data => {
+        loader.present().then(() => {
+          db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM InstagramLikers GROUP BY name ORDER BY user_count DESC', {})
+            .then((data) => {
+              let dataArray = [];
+              if (data.rows.length > 0) {
+                for (let i = 0; i < data.rows.length; i++) {
+                  dataArray.push(data.rows.item(i));
+                }
+              }
+              loader.dismiss();
+              env.navCtrl.push(YourLikersPage, {
+                likers: dataArray
+              });
+            })
+            .catch(e => {});
+        }).catch(()=>{
           loader.dismiss();
-          env.navCtrl.push(YourLikersPage, {
-            likers: dataArray
-          });
-        })
-        .catch(e => {});
-    });
+        });
+      },
+      error => {
+        this.presentModal(InAppPurchaseInLikersPage);
+      }
+      );
   }
 
 

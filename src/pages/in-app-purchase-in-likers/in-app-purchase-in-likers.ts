@@ -5,10 +5,10 @@ import { NativeStorage } from '@ionic-native/native-storage';
 
 @IonicPage()
 @Component({
-  selector: 'page-in-app-purchase',
-  templateUrl: 'in-app-purchase.html',
+  selector: 'page-in-app-purchase-in-likers',
+  templateUrl: 'in-app-purchase-in-likers.html',
 })
-export class InAppPurchasePage {
+export class InAppPurchaseInLikersPage {
 
   constructor(
     public navCtrl: NavController, 
@@ -16,7 +16,6 @@ export class InAppPurchasePage {
     private iap: InAppPurchase, 
     private nativeStorage: NativeStorage,
   ) {
-
   }
 
   ionViewDidLoad() {
@@ -29,7 +28,7 @@ export class InAppPurchasePage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod1_sub'])
+    .getProducts(['prod_in_likers_sub'])
     .then((products) => {
        
     })
@@ -49,11 +48,11 @@ export class InAppPurchasePage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod1_sub')
+    .buy('prod_in_likers_sub')
     .then((data)=> {
       return this.iap.consume(data.productType, data.receipt, data.signature);
     }).then(() => {
-      env.nativeStorage.setItem('whoViewedFbProfile', "True")
+      env.nativeStorage.setItem('prod_in_likers', "True")
       .then(
         () => env.navCtrl.pop(),
       );
@@ -62,5 +61,5 @@ export class InAppPurchasePage {
       
     });
   }
- 
+
 }

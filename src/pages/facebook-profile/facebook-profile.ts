@@ -16,6 +16,11 @@ import { FacebookService } from '../../providers/facebook-service';
 import { SqliteService } from '../../providers/sqlite';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { FacebookHackersPage } from '../facebook-hackers/facebook-hackers';
+import { InAppPurchaseFbPhotosPage } from '../in-app-purchase-fb-photos/in-app-purchase-fb-photos';
+import { InAppPurchaseFbLikersPage } from '../in-app-purchase-fb-likers/in-app-purchase-fb-likers';
+import { InAppPurchaseFbLovePage } from '../in-app-purchase-fb-love/in-app-purchase-fb-love';
+import { InAppPurchaseFbLaughPage } from '../in-app-purchase-fb-laugh/in-app-purchase-fb-laugh';
+import { InAppPurchaseFbCrushPage } from '../in-app-purchase-fb-crush/in-app-purchase-fb-crush';
 
 @IonicPage()
 @Component({
@@ -318,16 +323,25 @@ export class FacebookProfilePage {
       else{
         env.facebookService.mostLikedPhotos(true);
       }
+    }).catch(()=>{
+
     });
   }
 
 
   dbPhotos() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
+    this.nativeStorage.getItem('prod_fb_photos')
+    .then(
+    data => {
     loader.present().then(() => {
       db.executeSql('Select FacebookPhotos.id, FacebookPhotos.source, count(FacebookLikers.id) as likesCount from FacebookPhotos LEFT JOIN FacebookLikers ON FacebookPhotos.id = FacebookLikers.image_id Group By FacebookLikers.image_id ORDER BY likesCount DESC', {})
         .then((data) => {
@@ -348,6 +362,14 @@ export class FacebookProfilePage {
     }).catch(()=>{
       loader.dismiss();
     });
+    },
+    error => {
+      this.presentModal(InAppPurchaseFbPhotosPage);
+    }
+    ).catch(()=>{
+      loader.dismiss();
+    });
+    
   }
 
   dbPhotoUrl() {
@@ -371,31 +393,44 @@ export class FacebookProfilePage {
 
 
   dbLikers() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
-            }
-          }
+    this.nativeStorage.getItem('prod_fb_likers')
+      .then(
+      data => {
+        loader.present().then(() => {
+          db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
+            .then((data) => {
+              let dataArray = [];
+              if (data.rows.length > 0) {
+                for (let i = 0; i < data.rows.length; i++) {
+                  dataArray.push(data.rows.item(i));
+                }
+              }
+              loader.dismiss();
+              env.navCtrl.push(LikesMeMostFbPage, {
+                likers: dataArray
+              });
+            })
+            .catch(e => {loader.dismiss();});
+        }).catch(()=>{
           loader.dismiss();
-          env.navCtrl.push(LikesMeMostFbPage, {
-            likers: dataArray
-          });
+        });
+      },
+      error => {
+        this.presentModal(InAppPurchaseFbLikersPage);
+      }
+      );
 
 
-        })
-        .catch(e => {loader.dismiss();});
-    }).catch(()=>{
-      loader.dismiss();
-    });
+
   }
 
   dbLikerUrl() {
@@ -417,31 +452,43 @@ export class FacebookProfilePage {
   }
 
   dbLoveReacters() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
-            }
-          }
-          loader.dismiss();
-          env.navCtrl.push(HeartReactPage, {
-            likers: dataArray
-          });
-        })
-        .catch(e => {
+    this.nativeStorage.getItem('prod_fb_lovers')
+      .then(
+      data => {
+        loader.present().then(() => {
+          db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
+            .then((data) => {
+              let dataArray = [];
+              if (data.rows.length > 0) {
+                for (let i = 0; i < data.rows.length; i++) {
+                  dataArray.push(data.rows.item(i));
+                }
+              }
+              loader.dismiss();
+              env.navCtrl.push(HeartReactPage, {
+                likers: dataArray
+              });
+            })
+            .catch(e => {
+              loader.dismiss();
+            });
+        }).catch(()=>{
           loader.dismiss();
         });
-    }).catch(()=>{
-      loader.dismiss();
-    });
+      },
+      error => {
+        this.presentModal(InAppPurchaseFbLovePage);
+      }
+      );
   }
 
   dbLoveUrl() {
@@ -464,30 +511,42 @@ export class FacebookProfilePage {
   }
 
   dbLaughReacters() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      // db.executeSql('SELECT * FROM FacebookLikers', {})
-      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['HAHA'])
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
+    this.nativeStorage.getItem('prod_fb_laugh')
+    .then(
+    data => {
+      loader.present().then(() => {
+        db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['HAHA'])
+          .then((data) => {
+            let dataArray = [];
+            if (data.rows.length > 0) {
+              for (let i = 0; i < data.rows.length; i++) {
+                dataArray.push(data.rows.item(i));
+              }
             }
-          }
-          loader.dismiss();
-          env.navCtrl.push(LaughReactPage, {
-            likers: dataArray
-          });
-        })
-        .catch(e => {loader.dismiss();});
-    }).catch(()=>{
-      loader.dismiss();
-    });
+            loader.dismiss();
+            env.navCtrl.push(LaughReactPage, {
+              likers: dataArray
+            });
+          })
+          .catch(e => {loader.dismiss();});
+      }).catch(()=>{
+        loader.dismiss();
+      });
+    },
+    error => {
+      this.presentModal(InAppPurchaseFbLaughPage);
+    }
+    );
+
   }
 
   dbLaughUrl() {
@@ -567,15 +626,14 @@ export class FacebookProfilePage {
         this.fbViewers();
       },
       error => {
-        this.presentModal();
-        // this.fbViewers();
+        this.presentModal(InAppPurchasePage);
       }
       );
   }
 
 
-  presentModal() {
-    let modal = this.modalCtrl.create(InAppPurchasePage);
+  presentModal(Page) {
+    let modal = this.modalCtrl.create(Page);
     modal.present();
   }
 
@@ -700,15 +758,13 @@ export class FacebookProfilePage {
             notificationArray.push({ "id": index, "text": viewers[0].name + ' visto tu facebook perfil.' });
             env.notifications(notificationArray);
             env.badgeCounterViewers();
-            if (index == 0)
-              env.notifier();
+            env.notifier();
           },
           error => {
             notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' visto tu facebook perfil.' });
             env.notifications(notificationArray);
             env.badgeCounterViewers();
-            // if (index == 0)
-              env.notifier();
+            env.notifier();
           }
           );
       })
@@ -743,8 +799,15 @@ export class FacebookProfilePage {
   
 
   fbHackers() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
-    db.executeSql('Select * from FacebookHackers', [])
+    this.nativeStorage.getItem('prod_fb_crush')
+    .then(
+    data => {
+      db.executeSql('Select * from FacebookHackers', [])
       .then((data) => {
         let dataArray = [];
         if (data.rows.length > 0) {
@@ -777,6 +840,11 @@ export class FacebookProfilePage {
       })
       .catch(e => {
       });
+    },
+    error => {
+      this.presentModal(InAppPurchaseFbCrushPage);
+    }
+    );
   }
 
   facebookHackers() {
@@ -855,10 +923,21 @@ export class FacebookProfilePage {
 
         let notificationArray = [];
 
-            notificationArray.push({ "id": index, "text": hackers[0].name + ' intentó hackear tu facebook perfil.' });
+        this.nativeStorage.getItem('prod_fb_crush')
+          .then(
+          data => {
+            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana' });
             env.notifications2(notificationArray);
             env.badgeCounterHackers();
-              env.notifierHackers();
+            env.notifierHackers();
+          },
+          error => {
+              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana' });
+              env.notifications2(notificationArray);
+              env.badgeCounterHackers();
+                env.notifierHackers();
+          }
+          );
       })
       .catch(e => {
       });

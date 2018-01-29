@@ -23,7 +23,7 @@ export class InAppPurchaseInstagramPage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod2'])
+    .getProducts(['prod2_sub'])
     .then((products) => {
       // alert("Success Get Products :"+JSON.stringify(products));
     })
@@ -46,7 +46,7 @@ export class InAppPurchaseInstagramPage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod2')
+    .buy('prod2_sub')
     .then((data)=> {
       // alert(JSON.stringify(data));
       return this.iap.consume(data.productType, data.receipt, data.signature);
