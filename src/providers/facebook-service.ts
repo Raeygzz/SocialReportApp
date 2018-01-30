@@ -12,6 +12,8 @@ export class FacebookService {
   likers = [];
   mediaInfoArray = [];
   fnName: String = "mostLiked";
+  photosArray: any = [];
+  likersArray: any = [];
 
   constructor(
     private nativeStorage: NativeStorage,
@@ -52,14 +54,13 @@ export class FacebookService {
       let db = env.sqliteService.getDbInstance();
       env.getID().then(data => {
         if (data == true) {
-          resolve(true);
           // env.fb.api("/" + env.id + "/photos/?fields=picture%2Clikes.limit(999)%7Bpic_small%2Cname%7D&limit=999&type=uploaded", params).then((userPhotos) => {
-            env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=uploaded", params).then((userPhotos) => {
-            console.log("UPLOADED.. Fb",userPhotos);
+          env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=uploaded", params).then((userPhotos) => {
+            console.log("UPLOADED.. Fb", userPhotos);
             // env.fb.api("/" + env.id + "/photos/?fields=picture%2Clikes.limit(999)%7Bpic_small%2Cname%7D&limit=999&type=tagged", params).then((userTaggedPhotos) => {
-              env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=tagged", params).then((userTaggedPhotos) => {
+            env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=tagged", params).then((userTaggedPhotos) => {
 
-              console.log("Tagged.. Fb",userTaggedPhotos);
+              console.log("Tagged.. Fb", userTaggedPhotos);
               let getDataTaggedArray = userTaggedPhotos.data;
 
               let tempTaggedArray = getDataTaggedArray.filter(function (temp) {
@@ -73,26 +74,28 @@ export class FacebookService {
               });
 
               let data = {
-                          "data": {
-                            "inserts": {
-                              "FacebookLikers": [
-                              ],
-                              "FacebookPhotos": [
-                              ]
-                            }
+                "data": {
+                  "inserts": {
+                    "FacebookLikers": [
+                    ],
+                    "FacebookPhotos": [
+                    ]
+                  }
                 }
-              };   
+              };
 
-               for (let i = 0; i < tempTaggedArray.length; i++) {
+              for (let i = 0; i < tempTaggedArray.length; i++) {
 
                 let photoData = {
-                  "id":tempTaggedArray[i].id,
-                  "source":tempTaggedArray[i].picture,
-                  "viewFlag":0
+                  "id": tempTaggedArray[i].id,
+                  "source": tempTaggedArray[i].picture,
+                  "viewFlag": 0
                 };
 
                 data.data.inserts.FacebookPhotos.push(photoData);
 
+                if (env.photosArray.length < 6)
+                  env.photosArray.push(photoData);
 
                 for (let j = 0; j < tempTaggedArray[i].reactions.data.length; j++) {
 
@@ -104,16 +107,21 @@ export class FacebookService {
                     "unique_id": "" + tempTaggedArray[i].reactions.data[j].id + tempTaggedArray[i].id,
                     "type": tempTaggedArray[i].reactions.data[j].type,
                     "viewFlag": 0
-                    };
+                  };
 
-                data.data.inserts.FacebookLikers.push(likerData);
-                    
+                  data.data.inserts.FacebookLikers.push(likerData);
+
+                  if (env.likersArray.length < 6)
+                    env.likersArray.push(likerData);
+                  else
+                    resolve(true);
+
                 }
 
               }
 
               for (let i = 0; i < tempArray.length; i++) {
-                
+
                 let photoData = {
                   "id": tempArray[i].id,
                   "source": tempArray[i].picture,
@@ -134,25 +142,25 @@ export class FacebookService {
                     "type": tempArray[i].reactions.data[j].type,
                     "viewFlag": 0
                   };
-                
-                  data.data.inserts.FacebookLikers.push(likerData);
-                                    
-                  }
-                
-               }
 
-               if(flagDbSetup){
-                env.JsonToDb(db,data).then(() => {
-                      // resolve(true);
+                  data.data.inserts.FacebookLikers.push(likerData);
+
+                }
+
+              }
+
+              if (flagDbSetup) {
+                env.JsonToDb(db, data).then(() => {
+                  // resolve(true);
                 }).catch(() => {
                   reject(true);
                 });
-               }else{
-                 let LikersData = data.data.inserts.FacebookLikers.slice(0);
-                 let PhotosData = data.data.inserts.FacebookPhotos.slice(0);
-                 env.checkNewLiker(db, LikersData);
-                 env.checkNewPhoto(db, PhotosData);
-               }
+              } else {
+                let LikersData = data.data.inserts.FacebookLikers.slice(0);
+                let PhotosData = data.data.inserts.FacebookPhotos.slice(0);
+                env.checkNewLiker(db, LikersData);
+                env.checkNewPhoto(db, PhotosData);
+              }
 
 
             });
@@ -172,197 +180,197 @@ export class FacebookService {
   }
 
 
-  JsonToDb(db,data){
+  JsonToDb(db, data) {
     return new Promise((resolve, reject) => {
       this.sqlitePorter.importJsonToDb(db, data)
-      .then(() => {
-        console.log('Imported');
-        resolve(true);
-      })
-      .catch(e => {
-        console.error(e);
-        this.doFbLogout().then(() => {
-          reject(true);
+        .then(() => {
+          console.log('Imported');
+          resolve(true);
+        })
+        .catch(e => {
+          console.error(e);
+          this.doFbLogout().then(() => {
+            reject(true);
+          });
         });
-      });
     }
     );
   }
 
-  checkNewLiker(db,LikersData){
+  checkNewLiker(db, LikersData) {
     db.executeSql('Select * from FacebookLikers', {})
-    .then((dataDb) => {
-      let dataArray = [];
-      if (dataDb.rows.length > 0) {
-        for (let i = 0; i < dataDb.rows.length; i++) {
-          dataArray.push(dataDb.rows.item(i));
+      .then((dataDb) => {
+        let dataArray = [];
+        if (dataDb.rows.length > 0) {
+          for (let i = 0; i < dataDb.rows.length; i++) {
+            dataArray.push(dataDb.rows.item(i));
+          }
         }
-      }
 
-      if(dataArray.length == 0){
-        return;
-      }
-      
-      let newLikers = LikersData.filter(this.comparerLikers(dataArray));
-      console.log("newLikers",newLikers);
-      let unLikers = dataArray.filter(this.comparerLikers(LikersData));
-      console.log("unLikers",unLikers);
+        if (dataArray.length == 0) {
+          return;
+        }
 
-      if(newLikers.length>0){
-        this.insertNewLikers(newLikers, db);
-      }
-      if(unLikers.length>0){
-        this.deleteUnLikers(unLikers, db);
-      }
-    })
-    .catch(e => console.log(e));
+        let newLikers = LikersData.filter(this.comparerLikers(dataArray));
+        console.log("newLikers", newLikers);
+        let unLikers = dataArray.filter(this.comparerLikers(LikersData));
+        console.log("unLikers", unLikers);
+
+        if (newLikers.length > 0) {
+          this.insertNewLikers(newLikers, db);
+        }
+        if (unLikers.length > 0) {
+          this.deleteUnLikers(unLikers, db);
+        }
+      })
+      .catch(e => console.log(e));
   }
 
-  checkNewPhoto(db,PhotosData){
+  checkNewPhoto(db, PhotosData) {
     db.executeSql('Select * from FacebookPhotos', {})
-    .then((dataDb) => {
-      let dataArray = [];
-      if (dataDb.rows.length > 0) {
-        for (let i = 0; i < dataDb.rows.length; i++) {
-          dataArray.push(dataDb.rows.item(i));
+      .then((dataDb) => {
+        let dataArray = [];
+        if (dataDb.rows.length > 0) {
+          for (let i = 0; i < dataDb.rows.length; i++) {
+            dataArray.push(dataDb.rows.item(i));
+          }
         }
-      }
 
-      if(dataArray.length == 0){
-        return;
-      }
+        if (dataArray.length == 0) {
+          return;
+        }
 
-      let newPhotos = PhotosData.filter(this.comparerPhotos(dataArray));
-      console.log("newPhotos",newPhotos);
-      let deletedPhotos = dataArray.filter(this.comparerPhotos(PhotosData));
-      console.log("deletedPhotos",deletedPhotos);
+        let newPhotos = PhotosData.filter(this.comparerPhotos(dataArray));
+        console.log("newPhotos", newPhotos);
+        let deletedPhotos = dataArray.filter(this.comparerPhotos(PhotosData));
+        console.log("deletedPhotos", deletedPhotos);
 
-      if(newPhotos.length>0){
-        this.insertNewPhotos(newPhotos, db);
-      }
-      if(deletedPhotos.length>0){
-        this.deletePhotos(deletedPhotos, db);
-      }
+        if (newPhotos.length > 0) {
+          this.insertNewPhotos(newPhotos, db);
+        }
+        if (deletedPhotos.length > 0) {
+          this.deletePhotos(deletedPhotos, db);
+        }
 
-    })
-    .catch(e => console.log(e));
+      })
+      .catch(e => console.log(e));
   }
 
-  comparerLikers(otherArray){
-    return function(current){
-      return otherArray.filter(function(other){
+  comparerLikers(otherArray) {
+    return function (current) {
+      return otherArray.filter(function (other) {
         return other.unique_id == current.unique_id
       }).length == 0;
     }
   }
 
-  comparerPhotos(otherArray){
-    return function(current){
-      return otherArray.filter(function(other){
+  comparerPhotos(otherArray) {
+    return function (current) {
+      return otherArray.filter(function (other) {
         return other.id == current.id
       }).length == 0;
     }
   }
-  
-  insertNewPhotos(photos, db){
-    for(let i=0;i<photos.length;i++){
+
+  insertNewPhotos(photos, db) {
+    for (let i = 0; i < photos.length; i++) {
       db.executeSql('INSERT INTO FacebookPhotos (id, source, viewFlag) VALUES (?, ?, ?)', [photos[i].id, photos[i].source, 0])
-      .then((dataDb) => {
-        console.log('New Photo Inserted');
-      });
+        .then((dataDb) => {
+          console.log('New Photo Inserted');
+        });
     }
   }
 
-  deletePhotos(photos, db){
-    for(let i=0;i<photos.length;i++){
+  deletePhotos(photos, db) {
+    for (let i = 0; i < photos.length; i++) {
       db.executeSql('Delete from FacebookPhotos where id=?', [photos[i].id])
-      .then((dataDb) => {
-        console.log('Photo Deleted');
-      });
+        .then((dataDb) => {
+          console.log('Photo Deleted');
+        });
     }
   }
 
-  insertNewLikers(likers, db){
-    for(let i=0;i<likers.length;i++){
-      db.executeSql('INSERT INTO FacebookLikers (id,name,picture,image_id,unique_id,type,viewFlag) VALUES (?, ?, ?, ?, ?, ?)', [likers[i].id, likers[i].name, likers[i].picture, likers[i].image_id, likers[i].unique_id,likers[i].type, 0])
-      .then((dataDb) => {
-        console.log('New Liker Inserted');
-      });
+  insertNewLikers(likers, db) {
+    for (let i = 0; i < likers.length; i++) {
+      db.executeSql('INSERT INTO FacebookLikers (id,name,picture,image_id,unique_id,type,viewFlag) VALUES (?, ?, ?, ?, ?, ?)', [likers[i].id, likers[i].name, likers[i].picture, likers[i].image_id, likers[i].unique_id, likers[i].type, 0])
+        .then((dataDb) => {
+          console.log('New Liker Inserted');
+        });
     }
   }
 
-  deleteUnLikers(unlikers, db){
-    for(let i=0;i<unlikers.length;i++){
+  deleteUnLikers(unlikers, db) {
+    for (let i = 0; i < unlikers.length; i++) {
       db.executeSql('Delete from FacebookLikers where unique_id=?', [unlikers[i].unique_id])
-      .then((dataDb) => {
-        console.log('Liker Deleted');
-      });
+        .then((dataDb) => {
+          console.log('Liker Deleted');
+        });
     }
   }
 
   doFbLogout() {
     let env = this;
     return new Promise((resolve, reject) => {
-    this.fb.logout()
-      .then(function (response) {
-        localStorage.removeItem("todays_date");
-        localStorage.removeItem("todays_date_hackers");
-        localStorage.removeItem("todaysViewers");
-        localStorage.removeItem("viewerLengthFb");
-        localStorage.removeItem("todaysHackers");
-        localStorage.removeItem("hackerLengthFb");
-        env.nativeStorage.remove('fbUser').then(
-          () => {
-            let db = env.sqliteService.getDbInstance();
-            db.executeSql('Delete FROM FacebookLikers', {})
-            .then((dataDb) => {
-              console.log("FacebookLikers table deleted")
-            });
-            db.executeSql('Delete FROM FacebookPhotos', {})
-            .then((dataDb) => {
-              console.log("FacebookPhotos table deleted")
-            });
-            db.executeSql('Delete FROM FacebookViewers', {})
-            .then((dataDb) => {
-              console.log("FacebookViewers table deleted")
-            });
-            db.executeSql('Delete FROM FacebookHackers', {})
-            .then((data) => {
-              console.log("FacebookHackers table deleted")
-            });
-            resolve(true);
-          },
-          error => {
-            reject(true);
-           }
-        );
-      }, function (error) {
-        reject(true);
-      });
+      this.fb.logout()
+        .then(function (response) {
+          localStorage.removeItem("todays_date");
+          localStorage.removeItem("todays_date_hackers");
+          localStorage.removeItem("todaysViewers");
+          localStorage.removeItem("viewerLengthFb");
+          localStorage.removeItem("todaysHackers");
+          localStorage.removeItem("hackerLengthFb");
+          env.nativeStorage.remove('fbUser').then(
+            () => {
+              let db = env.sqliteService.getDbInstance();
+              db.executeSql('Delete FROM FacebookLikers', {})
+                .then((dataDb) => {
+                  console.log("FacebookLikers table deleted")
+                });
+              db.executeSql('Delete FROM FacebookPhotos', {})
+                .then((dataDb) => {
+                  console.log("FacebookPhotos table deleted")
+                });
+              db.executeSql('Delete FROM FacebookViewers', {})
+                .then((dataDb) => {
+                  console.log("FacebookViewers table deleted")
+                });
+              db.executeSql('Delete FROM FacebookHackers', {})
+                .then((data) => {
+                  console.log("FacebookHackers table deleted")
+                });
+              resolve(true);
+            },
+            error => {
+              reject(true);
+            }
+          );
+        }, function (error) {
+          reject(true);
+        });
     });
   }
 
 
   dbView() {
     return new Promise((resolve, reject) => {
-    let db = this.sqliteService.getDbInstance();
-        db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
-          .then((data) => {
-            let dataArray = [];
-            if (data.rows.length > 0) {
-              for (let i = 0; i < data.rows.length; i++) {
-                dataArray.push(data.rows.item(i));
-              }
+      let db = this.sqliteService.getDbInstance();
+      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
+        .then((data) => {
+          let dataArray = [];
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              dataArray.push(data.rows.item(i));
             }
-            console.log("......>>>><<<<<fACEBOOK lIKERS", dataArray);
-            resolve(dataArray);
-          })
-          .catch(e => {
-            console.log(e);
-            reject(true);
-          });
-  });
-}
+          }
+          console.log("......>>>><<<<<fACEBOOK lIKERS", dataArray);
+          resolve(dataArray);
+        })
+        .catch(e => {
+          console.log(e);
+          reject(true);
+        });
+    });
+  }
 
 
 }

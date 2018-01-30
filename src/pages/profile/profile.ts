@@ -30,12 +30,11 @@ export class ProfilePage {
   loader: any;
   name: string = null;
   url: String = './assets/imgs/no-image.jpeg';
-  urlPhoto: String = './assets/imgs/no-image.jpeg';
-  urlViewer: String = './assets/imgs/no-image.jpeg';
-  urlLiker: String = './assets/imgs/no-image.jpeg';
-  urlLove: String = './assets/imgs/no-image.jpeg';
-  urlLaugh: String = './assets/imgs/no-image.jpeg';
-  urlHacker: String = './assets/imgs/no-image.jpeg';
+  urlPhoto:String = this.instagramService.photosArray.length > 0 ? this.instagramService.photosArray[0].source : './assets/imgs/no-image.jpeg';
+  urlViewer:String = './assets/imgs/no-image.jpeg';
+  urlLiker:String = this.instagramService.likersArray.length > 0 ? this.instagramService.likersArray[0].picture : './assets/imgs/no-image.jpeg';
+  urlHacker:String = './assets/imgs/no-image.jpeg';
+
   youLikeMostCount: number = 0;
   youLikeMostBadge: boolean = false;
   likesYouMostCount: number = 0;

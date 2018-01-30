@@ -37,11 +37,11 @@ export class FacebookProfilePage {
   fnName: String = "mostLiked";
   name: String = null;
   url: String = './assets/imgs/no-image.jpeg';
-  urlPhoto:String = './assets/imgs/no-image.jpeg';
+  urlPhoto:String = this.facebookService.photosArray.length > 0 ? this.facebookService.photosArray[0].source : './assets/imgs/no-image.jpeg';
   urlViewer:String = './assets/imgs/no-image.jpeg';
-  urlLiker:String = './assets/imgs/no-image.jpeg';
-  urlLove:String = './assets/imgs/no-image.jpeg';
-  urlLaugh:String = './assets/imgs/no-image.jpeg';
+  urlLiker:String = this.facebookService.likersArray.length > 0 ? this.facebookService.likersArray[0].picture : './assets/imgs/no-image.jpeg';
+  urlLove:String = this.facebookService.likersArray.length > 1 ? this.facebookService.likersArray[1].picture : './assets/imgs/no-image.jpeg';
+  urlLaugh:String = this.facebookService.likersArray.length > 2 ? this.facebookService.likersArray[2].picture : './assets/imgs/no-image.jpeg';
   urlHacker:String = './assets/imgs/no-image.jpeg';
   whoViewedYourProfileFbCount: number = 0;
   whoViewedYourProfileFbBadge: boolean = false;

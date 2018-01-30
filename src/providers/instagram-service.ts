@@ -10,6 +10,8 @@ export class InstagramService {
 
   token: any;
   mediaInfoArray = [];
+  photosArray: any = [];
+  likersArray: any = [];
 
   constructor(
     private nativeStorage: NativeStorage,
@@ -41,7 +43,7 @@ export class InstagramService {
           env.token = dataToken;
           env.UserService.getSelfMedia(env.token)
             .then((response: any) => {
-              resolve(true);
+              
               let mediaArray = response.data;
               console.log("Instagram Data",response.data);
               let mediaIdArray = [];
@@ -92,6 +94,12 @@ export class InstagramService {
                       "viewFlag": 0
                       };
                     data.data.inserts.InstagramLikers.push(likerData);
+
+                    if (env.likersArray.length < 6)
+                    env.likersArray.push(likerData);
+                    else
+                    resolve(true);
+                    
                   }
 
                   i++;
@@ -127,6 +135,10 @@ export class InstagramService {
                   "viewFlag": 0
                 };
                 data.data.inserts.InstagramPhotos.push(photoData);
+
+                if (env.photosArray.length < 6)
+                  env.photosArray.push(photoData);
+
               }
 
               for (let i = 0; i < mediaArray.length; i++) {
