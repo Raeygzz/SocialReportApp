@@ -48,7 +48,7 @@ export class InAppPurchaseFbLovePage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod_fb_lovers_sub')
+    .subscribe('prod_fb_lovers_sub')
     .then((data)=> {
       return this.iap.consume(data.productType, data.receipt, data.signature);
     }).then(() => {

@@ -45,12 +45,12 @@ export class InAppPurchasePage {
     });
   }
   
-  
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod1_sub')
+    .subscribe('prod1_sub')
     .then((data)=> {
+
       return this.iap.consume(data.productType, data.receipt, data.signature);
     }).then(() => {
       env.nativeStorage.setItem('whoViewedFbProfile', "True")

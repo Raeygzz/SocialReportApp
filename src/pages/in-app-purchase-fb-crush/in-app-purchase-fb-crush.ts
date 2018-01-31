@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { AlertController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -15,6 +16,7 @@ export class InAppPurchaseFbCrushPage {
     public navParams: NavParams, 
     private iap: InAppPurchase, 
     private nativeStorage: NativeStorage,
+    private alertCtrl: AlertController
   ) {
   }
 
@@ -48,17 +50,35 @@ export class InAppPurchaseFbCrushPage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod_fb_crush_sub')
-    .then((data)=> {
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
+    .subscribe('prod_fb_crush_sub')
+    .then((data) => {
+      env.presentAlert(data);
       env.nativeStorage.setItem('prod_fb_crush', "True")
       .then(
         () => env.navCtrl.pop(),
       );
     })
+    // .then((data)=> {
+    //   alert(JSON.stringify(data));
+    //   return this.iap.consume(data.productType, data.receipt, data.signature);
+    // }).then(() => {
+    //   env.nativeStorage.setItem('prod_fb_crush', "True")
+    //   .then(
+    //     () => env.navCtrl.pop(),
+    //   );
+    // })
     .catch((err)=> {
-      
+      alert("Test Subscription Fail");
     });
   }
+
+  presentAlert(data) {
+    let alert = this.alertCtrl.create({
+      title: 'Low battery',
+      subTitle: JSON.stringify(data),
+      buttons: ['Dismiss']
+    });
+    alert.present();
+  }
+
 }

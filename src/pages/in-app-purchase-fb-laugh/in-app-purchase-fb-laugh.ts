@@ -48,8 +48,9 @@ export class InAppPurchaseFbLaughPage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod_fb_laugh_sub')
+    .subscribe('prod_fb_laugh_sub')
     .then((data)=> {
+      alert(JSON.stringify(data));
       return this.iap.consume(data.productType, data.receipt, data.signature);
     }).then(() => {
       env.nativeStorage.setItem('prod_fb_laugh', "True")

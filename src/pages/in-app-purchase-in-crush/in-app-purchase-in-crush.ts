@@ -48,7 +48,7 @@ export class InAppPurchaseInCrushPage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod_in_crush_sub')
+    .subscribe('prod_in_crush_sub')
     .then((data)=> {
       return this.iap.consume(data.productType, data.receipt, data.signature);
     }).then(() => {

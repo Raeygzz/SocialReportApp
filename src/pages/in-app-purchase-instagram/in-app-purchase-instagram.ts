@@ -46,9 +46,9 @@ export class InAppPurchaseInstagramPage {
   buyProducts(){
     let env = this;
     this.iap
-    .buy('prod2_sub')
+    .subscribe('prod2_sub')
     .then((data)=> {
-      // alert(JSON.stringify(data));
+      alert(JSON.stringify(data));
       return this.iap.consume(data.productType, data.receipt, data.signature);
     }).then(() => {
       env.nativeStorage.setItem('whoViewedInstagramProfile', "True")
