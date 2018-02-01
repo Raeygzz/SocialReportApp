@@ -25,10 +25,10 @@ export class InAppPurchaseInstagramPage {
     this.iap
     .getProducts(['prod2_sub'])
     .then((products) => {
-      // alert("Success Get Products :"+JSON.stringify(products));
+      alert(JSON.stringify(products));
     })
     .catch((err) => {
-      // alert("Error get Products :"+JSON.stringify(err));
+      alert(JSON.stringify(err));
     });
   }
 
@@ -47,18 +47,14 @@ export class InAppPurchaseInstagramPage {
     let env = this;
     this.iap
     .subscribe('prod2_sub')
-    .then((data)=> {
-      alert(JSON.stringify(data));
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
+      .then((data:any) => {
       env.nativeStorage.setItem('whoViewedInstagramProfile', "True")
       .then(
-        () => env.navCtrl.pop(),
-        error => alert('Error storing item : '+error)
+        () => env.navCtrl.pop()
       );
     })
     .catch((err)=> {
-      // alert("Error buy Products :"+JSON.stringify(err));
+      alert(JSON.stringify(err));
     });
   }
 

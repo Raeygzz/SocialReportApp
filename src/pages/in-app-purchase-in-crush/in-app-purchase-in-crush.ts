@@ -30,9 +30,10 @@ export class InAppPurchaseInCrushPage {
     this.iap
     .getProducts(['prod_in_crush_sub'])
     .then((products) => {
-       
+      alert(JSON.stringify(products));
     })
     .catch((err) => {
+      alert(JSON.stringify(err));
     });
   }
 
@@ -49,16 +50,14 @@ export class InAppPurchaseInCrushPage {
     let env = this;
     this.iap
     .subscribe('prod_in_crush_sub')
-    .then((data)=> {
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
+    .then((data:any)=> {
       env.nativeStorage.setItem('prod_in_crush', "True")
       .then(
         () => env.navCtrl.pop(),
       );
     })
     .catch((err)=> {
-      
+      alert(JSON.stringify(err));
     });
   }
 }

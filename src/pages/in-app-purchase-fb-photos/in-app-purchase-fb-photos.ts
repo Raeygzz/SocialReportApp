@@ -30,9 +30,10 @@ export class InAppPurchaseFbPhotosPage {
     this.iap
     .getProducts(['prod_fb_photos_sub'])
     .then((products) => {
-       
+      alert(JSON.stringify(products));
     })
     .catch((err) => {
+      alert(JSON.stringify(err));
     });
   }
 
@@ -50,15 +51,13 @@ export class InAppPurchaseFbPhotosPage {
     this.iap
     .subscribe('prod_fb_photos_sub')
     .then((data)=> {
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
       env.nativeStorage.setItem('prod_fb_photos', "True")
       .then(
         () => env.navCtrl.pop(),
       );
     })
     .catch((err)=> {
-      
+      alert(JSON.stringify(err));
     });
   }
 

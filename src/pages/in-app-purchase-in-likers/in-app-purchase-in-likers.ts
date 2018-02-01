@@ -30,9 +30,10 @@ export class InAppPurchaseInLikersPage {
     this.iap
     .getProducts(['prod_in_likers_sub'])
     .then((products) => {
-       
+      alert(JSON.stringify(products));
     })
     .catch((err) => {
+      alert(JSON.stringify(err));
     });
   }
 
@@ -49,17 +50,14 @@ export class InAppPurchaseInLikersPage {
     let env = this;
     this.iap
     .subscribe('prod_in_likers_sub')
-    .then((data)=> {
-      alert(JSON.stringify(data));
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
+    .then((data:any)=> {
       env.nativeStorage.setItem('prod_in_likers', "True")
       .then(
         () => env.navCtrl.pop(),
       );
     })
     .catch((err)=> {
-      
+      alert(JSON.stringify(err));
     });
   }
 

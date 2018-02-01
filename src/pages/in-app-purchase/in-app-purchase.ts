@@ -31,7 +31,7 @@ export class InAppPurchasePage {
     this.iap
     .getProducts(['prod1_sub'])
     .then((products) => {
-       
+      alert(JSON.stringify(products));
     })
     .catch((err) => {
     });
@@ -49,10 +49,7 @@ export class InAppPurchasePage {
     let env = this;
     this.iap
     .subscribe('prod1_sub')
-    .then((data)=> {
-
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
+    .then((data:any)=> {
       env.nativeStorage.setItem('whoViewedFbProfile', "True")
       .then(
         () => env.navCtrl.pop(),

@@ -32,9 +32,10 @@ export class InAppPurchaseFbCrushPage {
     this.iap
     .getProducts(['prod_fb_crush_sub'])
     .then((products) => {
-       
+       alert(JSON.stringify(products));
     })
     .catch((err) => {
+      alert(JSON.stringify(err));
     });
   }
 
@@ -51,34 +52,15 @@ export class InAppPurchaseFbCrushPage {
     let env = this;
     this.iap
     .subscribe('prod_fb_crush_sub')
-    .then((data) => {
-      env.presentAlert(data);
+    .then((data:any) => {
       env.nativeStorage.setItem('prod_fb_crush', "True")
       .then(
         () => env.navCtrl.pop(),
       );
     })
-    // .then((data)=> {
-    //   alert(JSON.stringify(data));
-    //   return this.iap.consume(data.productType, data.receipt, data.signature);
-    // }).then(() => {
-    //   env.nativeStorage.setItem('prod_fb_crush', "True")
-    //   .then(
-    //     () => env.navCtrl.pop(),
-    //   );
-    // })
     .catch((err)=> {
-      alert("Test Subscription Fail");
+      alert(JSON.stringify(err));
     });
-  }
-
-  presentAlert(data) {
-    let alert = this.alertCtrl.create({
-      title: 'Low battery',
-      subTitle: JSON.stringify(data),
-      buttons: ['Dismiss']
-    });
-    alert.present();
   }
 
 }

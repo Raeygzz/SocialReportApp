@@ -49,17 +49,14 @@ export class InAppPurchaseFbLaughPage {
     let env = this;
     this.iap
     .subscribe('prod_fb_laugh_sub')
-    .then((data)=> {
-      alert(JSON.stringify(data));
-      return this.iap.consume(data.productType, data.receipt, data.signature);
-    }).then(() => {
+    .then((data:any)=> {
       env.nativeStorage.setItem('prod_fb_laugh', "True")
       .then(
         () => env.navCtrl.pop(),
       );
     })
     .catch((err)=> {
-      
+      alert(JSON.stringify(err));
     });
   }
 
