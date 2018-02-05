@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
 import { NativeStorage } from '@ionic-native/native-storage';
-import { AlertController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -15,8 +14,7 @@ export class InAppPurchaseFbCrushPage {
     public navCtrl: NavController, 
     public navParams: NavParams, 
     private iap: InAppPurchase, 
-    private nativeStorage: NativeStorage,
-    private alertCtrl: AlertController
+    private nativeStorage: NativeStorage
   ) {
   }
 
