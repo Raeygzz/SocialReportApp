@@ -402,6 +402,18 @@ export class FacebookProfilePage {
     let loader = this.loading.create({
       content: 'Loading..',
     });
+<<<<<<< HEAD
+    loader.present().then(() => {
+      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
+        .then((data) => {
+          let dataArray = [];
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              dataArray.push(data.rows.item(i));
+            }
+          }
+          console.log("......>>>><<<<<FACEBOOK lIKERS", dataArray);
+=======
     this.nativeStorage.getItem('prod_fb_likers')
       .then(
       data => {
@@ -421,6 +433,7 @@ export class FacebookProfilePage {
             })
             .catch(e => {loader.dismiss();});
         }).catch(()=>{
+>>>>>>> 494937c2c3859857c5759f6c1acbb98e8ed927ef
           loader.dismiss();
         });
       },
