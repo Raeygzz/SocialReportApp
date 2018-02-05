@@ -11,9 +11,9 @@ import { NativeStorage } from '@ionic-native/native-storage';
 export class InAppPurchaseFbLovePage {
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
-    private iap: InAppPurchase, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private iap: InAppPurchase,
     private nativeStorage: NativeStorage,
   ) {
   }
@@ -22,43 +22,43 @@ export class InAppPurchaseFbLovePage {
     this.getProducts();
   }
 
-  closeModal(){
+  closeModal() {
     this.navCtrl.pop();
   }
 
-  getProducts(){
+  getProducts() {
     this.iap
-    .getProducts(['prod_fb_lovers_sub'])
-    .then((products) => {
-      alert(JSON.stringify(products));
-    })
-    .catch((err) => {
-      alert(JSON.stringify(err));
-    });
+      .getProducts(['prod_fb_lovers_sub_final'])
+      .then((products) => {
+        alert(JSON.stringify(products));
+      })
+      .catch((err) => {
+        alert(JSON.stringify(err));
+      });
   }
 
-  restore(){
+  restore() {
     this.iap
-    .restorePurchases()
-    .then((data) => {
-    }).catch((err) => {
-    });
+      .restorePurchases()
+      .then((data) => {
+      }).catch((err) => {
+      });
   }
-  
-  
-  buyProducts(){
+
+
+  buyProducts() {
     let env = this;
     this.iap
-    .subscribe('prod_fb_lovers_sub')
-    .then((data:any)=> {
-      env.nativeStorage.setItem('prod_fb_lovers', "True")
-      .then(
-        () => env.navCtrl.pop(),
-      );
-    })
-    .catch((err)=> {
-      alert(JSON.stringify(err));
-    });
+      .buy('prod_fb_lovers_sub_final')
+      .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
+      .then(() => {
+        env.nativeStorage.setItem('prod_fb_lovers', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+        console.log('product was successfully consumed!')
+      })
+      .catch(err => console.log(err))
   }
 
 }

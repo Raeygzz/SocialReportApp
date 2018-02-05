@@ -28,7 +28,7 @@ export class InAppPurchaseInLikersPage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod_in_likers_sub'])
+    .getProducts(['prod_in_likers_sub_final'])
     .then((products) => {
       alert(JSON.stringify(products));
     })
@@ -49,16 +49,16 @@ export class InAppPurchaseInLikersPage {
   buyProducts(){
     let env = this;
     this.iap
-    .subscribe('prod_in_likers_sub')
-    .then((data:any)=> {
-      env.nativeStorage.setItem('prod_in_likers', "True")
+  .buy('prod_in_likers_sub_final')
+  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
+  .then(() => {
+    env.nativeStorage.setItem('prod_in_likers', "True")
       .then(
         () => env.navCtrl.pop(),
       );
-    })
-    .catch((err)=> {
-      alert(JSON.stringify(err));
-    });
+    console.log('product was successfully consumed!')
+  })
+  .catch( err=> console.log(err))
   }
 
 }

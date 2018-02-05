@@ -29,7 +29,7 @@ export class InAppPurchasePage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod1_sub'])
+    .getProducts(['prod1_sub_final'])
     .then((products) => {
       alert(JSON.stringify(products));
     })
@@ -47,17 +47,18 @@ export class InAppPurchasePage {
   
   buyProducts(){
     let env = this;
+
     this.iap
-    .subscribe('prod1_sub')
-    .then((data:any)=> {
-      env.nativeStorage.setItem('whoViewedFbProfile', "True")
-      .then(
-        () => env.navCtrl.pop(),
-      );
-    })
-    .catch((err)=> {
-      
-    });
+  .buy('prod1_sub_final')
+  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
+  .then(() => {
+    env.nativeStorage.setItem('whoViewedFbProfile', "True")
+    .then(
+      () => env.navCtrl.pop(),
+    );
+    console.log('product was successfully consumed!')
+  })
+  .catch( err=> console.log(err))
   }
  
 }

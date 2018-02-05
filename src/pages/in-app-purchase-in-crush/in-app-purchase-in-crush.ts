@@ -28,7 +28,7 @@ export class InAppPurchaseInCrushPage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod_in_crush_sub'])
+    .getProducts(['prod_in_crush_sub_final'])
     .then((products) => {
       alert(JSON.stringify(products));
     })
@@ -49,15 +49,15 @@ export class InAppPurchaseInCrushPage {
   buyProducts(){
     let env = this;
     this.iap
-    .subscribe('prod_in_crush_sub')
-    .then((data:any)=> {
-      env.nativeStorage.setItem('prod_in_crush', "True")
-      .then(
-        () => env.navCtrl.pop(),
-      );
-    })
-    .catch((err)=> {
-      alert(JSON.stringify(err));
-    });
+  .buy('prod_in_crush_sub_final')
+  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
+  .then(() => {
+    env.nativeStorage.setItem('prod_in_crush', "True")
+    .then(
+      () => env.navCtrl.pop(),
+    );
+    console.log('product was successfully consumed!')
+  })
+  .catch( err=> console.log(err))
   }
 }

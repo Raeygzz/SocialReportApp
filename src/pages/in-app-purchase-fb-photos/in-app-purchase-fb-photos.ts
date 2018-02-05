@@ -28,7 +28,7 @@ export class InAppPurchaseFbPhotosPage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod_fb_photos_sub'])
+    .getProducts(['prod_fb_photos_sub_final'])
     .then((products) => {
       alert(JSON.stringify(products));
     })
@@ -48,17 +48,17 @@ export class InAppPurchaseFbPhotosPage {
   
   buyProducts(){
     let env = this;
-    this.iap
-    .subscribe('prod_fb_photos_sub')
-    .then((data)=> {
-      env.nativeStorage.setItem('prod_fb_photos', "True")
-      .then(
-        () => env.navCtrl.pop(),
-      );
-    })
-    .catch((err)=> {
-      alert(JSON.stringify(err));
-    });
+  this.iap
+  .buy('prod_fb_photos_sub_final')
+  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
+  .then(() => {
+    env.nativeStorage.setItem('prod_fb_photos', "True")
+    .then(
+      () => env.navCtrl.pop(),
+    );
+    console.log('product was successfully consumed!')
+  })
+  .catch( err=> console.log(err))
   }
 
 

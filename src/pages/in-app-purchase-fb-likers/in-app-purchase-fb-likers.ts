@@ -28,7 +28,7 @@ export class InAppPurchaseFbLikersPage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod_fb_likers_sub'])
+    .getProducts(['prod_fb_likers_sub_final'])
     .then((products) => {
       alert(JSON.stringify(products));
     })
@@ -49,16 +49,16 @@ export class InAppPurchaseFbLikersPage {
   buyProducts(){
     let env = this;
     this.iap
-    .subscribe('prod_fb_likers_sub')
-    .then((data)=> {
-      env.nativeStorage.setItem('prod_fb_likers', "True")
-      .then(
-        () => env.navCtrl.pop(),
-      );
-    })
-    .catch((err)=> {
-      alert(JSON.stringify(err));
-    });
+  .buy('prod_fb_likers_sub_final')
+  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
+  .then(() => {
+    env.nativeStorage.setItem('prod_fb_likers', "True")
+    .then(
+      () => env.navCtrl.pop(),
+    );
+    console.log('product was successfully consumed!')
+  })
+  .catch( err=> console.log(err))
   }
 
 }
