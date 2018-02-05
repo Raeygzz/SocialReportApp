@@ -380,7 +380,6 @@ export class FacebookProfilePage {
       content: 'Loading..',
     });
     loader.present().then(() => {
-      // db.executeSql('SELECT * FROM FacebookLikers', {})
       db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
         .then((data) => {
           let dataArray = [];
