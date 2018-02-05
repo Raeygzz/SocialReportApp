@@ -31,7 +31,7 @@ export class InAppPurchasePage {
     this.iap
     .getProducts(['prod1_sub_final'])
     .then((products) => {
-      alert(JSON.stringify(products));
+      // alert(JSON.stringify(products));
     })
     .catch((err) => {
     });

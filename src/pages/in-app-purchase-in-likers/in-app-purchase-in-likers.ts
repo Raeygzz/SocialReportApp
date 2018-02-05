@@ -30,10 +30,10 @@ export class InAppPurchaseInLikersPage {
     this.iap
     .getProducts(['prod_in_likers_sub_final'])
     .then((products) => {
-      alert(JSON.stringify(products));
+      // alert(JSON.stringify(products));
     })
     .catch((err) => {
-      alert(JSON.stringify(err));
+      // alert(JSON.stringify(err));
     });
   }
 

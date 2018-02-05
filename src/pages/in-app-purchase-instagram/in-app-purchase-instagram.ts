@@ -25,10 +25,10 @@ export class InAppPurchaseInstagramPage {
     this.iap
     .getProducts(['prod2_sub_final'])
     .then((products) => {
-      alert(JSON.stringify(products));
+      // alert(JSON.stringify(products));
     })
     .catch((err) => {
-      alert(JSON.stringify(err));
+      // alert(JSON.stringify(err));
     });
   }
 

@@ -32,10 +32,10 @@ export class InAppPurchaseFbCrushPage {
     this.iap
     .getProducts(['prod_fb_crush_sub_final'])
     .then((products) => {
-       alert(JSON.stringify(products));
+      //  alert(JSON.stringify(products));
     })
     .catch((err) => {
-      alert(JSON.stringify(err));
+        // alert(JSON.stringify(err));
     });
   }
 
