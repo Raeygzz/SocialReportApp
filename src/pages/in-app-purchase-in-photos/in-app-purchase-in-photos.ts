@@ -47,18 +47,29 @@ export class InAppPurchaseInPhotosPage {
   
   
   buyProducts(){
-    let env = this;
+  let env = this;
   this.iap
-  .buy('prod_in_photos_sub_final')
-  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
-  .then(() => {
-    env.nativeStorage.setItem('prod_in_photos', "True")
-  .then(
-    () => env.navCtrl.pop()
-  );
-    console.log('product was successfully consumed!')
-  })
-  .catch( err=> console.log(err))
+    .buy('prod_in_photos_sub_final')
+    .then(data => {
+      // alert(JSON.stringify(data));
+      this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
+        env.nativeStorage.setItem('prod_in_photos', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+        console.log('product was successfully consumed!')
+      }).catch(() => {
+
+      })
+    }).catch((err) => {
+      // alert(JSON.stringify(err));
+      if (err.code == '-6' || err.code == '-9') {
+        env.nativeStorage.setItem('prod_in_photos', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+      }
+    })
   }
 
 }

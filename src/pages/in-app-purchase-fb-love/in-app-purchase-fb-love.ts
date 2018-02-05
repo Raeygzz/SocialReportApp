@@ -47,18 +47,29 @@ export class InAppPurchaseFbLovePage {
 
 
   buyProducts() {
-    let env = this;
-    this.iap
-      .buy('prod_fb_lovers_sub_final')
-      .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
-      .then(() => {
-        env.nativeStorage.setItem('prod_fb_lovers', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
-        console.log('product was successfully consumed!')
-      })
-      .catch(err => console.log(err))
+      let env = this;
+      this.iap
+        .buy('prod_fb_lovers_sub_final')
+        .then(data => {
+          // alert(JSON.stringify(data));
+          this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+              .then(
+              () => env.navCtrl.pop(),
+            );
+            console.log('product was successfully consumed!')
+          }).catch(() => {
+    
+          })
+        }).catch((err) => {
+          // alert(JSON.stringify(err));
+          if (err.code == '-6' || err.code == '-9') {
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+              .then(
+              () => env.navCtrl.pop(),
+            );
+          }
+        })
   }
 
 }

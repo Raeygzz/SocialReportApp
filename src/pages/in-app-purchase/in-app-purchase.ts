@@ -11,9 +11,9 @@ import { NativeStorage } from '@ionic-native/native-storage';
 export class InAppPurchasePage {
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
-    private iap: InAppPurchase, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private iap: InAppPurchase,
     private nativeStorage: NativeStorage,
   ) {
 
@@ -23,42 +23,52 @@ export class InAppPurchasePage {
     this.getProducts();
   }
 
-  closeModal(){
+  closeModal() {
     this.navCtrl.pop();
   }
 
-  getProducts(){
+  getProducts() {
     this.iap
-    .getProducts(['prod1_sub_final'])
-    .then((products) => {
-      // alert(JSON.stringify(products));
-    })
-    .catch((err) => {
-    });
+      .getProducts(['prod1_sub_final'])
+      .then((products) => {
+        // alert(JSON.stringify(products));
+      })
+      .catch((err) => {
+      });
   }
 
-  restore(){
+  restore() {
     this.iap
-    .restorePurchases()
-    .then((data) => {
-    }).catch((err) => {
-    });
+      .restorePurchases()
+      .then((data) => {
+      }).catch((err) => {
+      });
   }
-  
-  buyProducts(){
+
+  buyProducts() {
     let env = this;
-
     this.iap
-  .buy('prod1_sub_final')
-  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
-  .then(() => {
-    env.nativeStorage.setItem('whoViewedFbProfile', "True")
-    .then(
-      () => env.navCtrl.pop(),
-    );
-    console.log('product was successfully consumed!')
-  })
-  .catch( err=> console.log(err))
+      .buy('prod1_sub_final')
+      .then(data => {
+        // alert(JSON.stringify(data));
+        this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+          console.log('product was successfully consumed!')
+        }).catch(() => {
+
+        })
+      }).catch((err) => {
+        // alert(JSON.stringify(err));
+        if (err.code == '-6' || err.code == '-9') {
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+        }
+      })
   }
- 
+
 }

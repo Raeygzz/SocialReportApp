@@ -46,18 +46,29 @@ export class InAppPurchaseFbLaughPage {
   
   
   buyProducts(){
-    let env = this;
-    this.iap
-  .buy('prod_fb_laugh_sub_final')
-  .then(data => this.iap.consume(data.productType, data.receipt, data.signature))
-  .then(() => {
-    env.nativeStorage.setItem('prod_fb_laugh', "True")
-    .then(
-      () => env.navCtrl.pop(),
-    );
-    console.log('product was successfully consumed!')
-  })
-  .catch( err=> console.log(err))
+  let env = this;
+  this.iap
+    .buy('prod_fb_laugh_sub_final')
+    .then(data => {
+      // alert(JSON.stringify(data));
+      this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
+        env.nativeStorage.setItem('prod_fb_laugh', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+        console.log('product was successfully consumed!')
+      }).catch(() => {
+
+      })
+    }).catch((err) => {
+      // alert(JSON.stringify(err));
+      if (err.code == '-6') {
+        env.nativeStorage.setItem('prod_fb_laugh', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+      }
+    })
   }
 
 }
