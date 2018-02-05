@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { InAppPurchase } from '@ionic-native/in-app-purchase';
 
 @IonicPage()
 @Component({
@@ -12,8 +13,8 @@ export class SettingsPage {
   hideSubscribedFacebook:boolean = false;
   hideSubscribedInstagram:boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage) {
-
+  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage, private iap: InAppPurchase) {
+    this.getProducts();
   }
 
   ionViewWillEnter(){
@@ -37,6 +38,16 @@ export class SettingsPage {
     let env = this;
     this.nativeStorage.remove('whoViewedFbProfile').then(()=>{
       env.hideSubscribedFacebook = true;
+    });
+  }
+
+  getProducts(){
+    this.iap
+    .getProducts(['prod_in_photos_sub'])
+    .then((products) => {
+       alert(JSON.stringify(products));
+    })
+    .catch((err) => {
     });
   }
 

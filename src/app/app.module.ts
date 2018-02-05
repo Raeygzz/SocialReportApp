@@ -25,6 +25,14 @@ import { HeartReactPageModule } from '../pages/heart-react/heart-react.module';
 import { LaughReactPageModule } from '../pages/laugh-react/laugh-react.module';
 import { FacebookHackersPageModule } from '../pages/facebook-hackers/facebook-hackers.module';
 import { InstagramHackersPageModule } from '../pages/instagram-hackers/instagram-hackers.module';
+import { InAppPurchaseFbCrushPageModule } from '../pages/in-app-purchase-fb-crush/in-app-purchase-fb-crush.module';
+import { InAppPurchaseFbLikersPageModule } from '../pages/in-app-purchase-fb-likers/in-app-purchase-fb-likers.module';
+import { InAppPurchaseFbLovePageModule } from '../pages/in-app-purchase-fb-love/in-app-purchase-fb-love.module';
+import { InAppPurchaseFbLaughPageModule } from '../pages/in-app-purchase-fb-laugh/in-app-purchase-fb-laugh.module';
+import { InAppPurchaseFbPhotosPageModule } from '../pages/in-app-purchase-fb-photos/in-app-purchase-fb-photos.module';
+import { InAppPurchaseInPhotosPageModule } from '../pages/in-app-purchase-in-photos/in-app-purchase-in-photos.module';
+import { InAppPurchaseInLikersPageModule } from '../pages/in-app-purchase-in-likers/in-app-purchase-in-likers.module';
+import { InAppPurchaseInCrushPageModule } from '../pages/in-app-purchase-in-crush/in-app-purchase-in-crush.module';
 
 import { Facebook } from '@ionic-native/facebook';
 import { NativeStorage } from '@ionic-native/native-storage';
@@ -68,7 +76,15 @@ import { SqliteService } from '../providers/sqlite';
     HeartReactPageModule,
     LaughReactPageModule,
     FacebookHackersPageModule,
-    InstagramHackersPageModule
+    InstagramHackersPageModule,
+    InAppPurchaseFbCrushPageModule,
+    InAppPurchaseFbLikersPageModule,
+    InAppPurchaseFbLovePageModule,
+    InAppPurchaseFbLaughPageModule,
+    InAppPurchaseFbPhotosPageModule,
+    InAppPurchaseInLikersPageModule,
+    InAppPurchaseInCrushPageModule,
+    InAppPurchaseInPhotosPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

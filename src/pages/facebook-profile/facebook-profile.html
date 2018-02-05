@@ -30,7 +30,7 @@
     <ion-item (click)="whoViewedYourProfile()">
       <ion-avatar item-start>
           <ion-badge *ngIf="whoViewedYourProfileFbBadge" color="danger">+{{whoViewedYourProfileFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlViewer" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2>¿Quien ha visto tu perfil?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -38,7 +38,7 @@
     <ion-item>
       <ion-avatar item-start>
           <ion-badge *ngIf="mostLikedPhotoFbBadge" color="danger">+{{mostLikedPhotoFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlPhoto" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2 (click)="mostLikedPhotos()">Fotos más gustadas</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -46,7 +46,7 @@
     <ion-item>
       <ion-avatar item-start>
           <ion-badge *ngIf="likesMeMostFbBadge" color="danger">+{{likesMeMostFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlLiker" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2 (click)="dbLikers()">¿A quién le gustas más?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -54,7 +54,7 @@
     <ion-item>
       <ion-avatar item-start>
           <ion-badge *ngIf="lovesMeMostFbBadge" color="danger">+{{lovesMeMostFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlLove" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2 (click)="dbLoveReacters()">¿A quién le encantas más?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -62,7 +62,7 @@
     <ion-item>
       <ion-avatar item-start>
           <ion-badge *ngIf="laughsMeMostFbBadge" color="danger">+{{laughsMeMostFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlLaugh" (error)="errorHandler(event) ">
       </ion-avatar>
       <h2 (click)="dbLaughReacters()">¿A quién haces reír más?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
@@ -70,9 +70,9 @@
     <ion-item (click)="fbHackers()">
       <ion-avatar item-start>
           <ion-badge *ngIf="whoHackedYourProfileFbBadge" color="danger">+{{whoHackedYourProfileFbCount}}</ion-badge>
-        <img [src]="url" (error)="errorHandler(event) ">
+        <img [src]="urlHacker" (error)="errorHandler(event) ">
       </ion-avatar>
-      <h2>¿Quién intentó hackear tu perfil?</h2>
+      <h2>¿Quién es tu fan de la semana?</h2>
       <ion-icon name="ios-arrow-forward-outline" item-end></ion-icon>
     </ion-item>
   </ion-list>

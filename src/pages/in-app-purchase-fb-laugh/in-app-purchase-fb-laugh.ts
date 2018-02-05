@@ -5,12 +5,17 @@ import { NativeStorage } from '@ionic-native/native-storage';
 
 @IonicPage()
 @Component({
-  selector: 'page-in-app-purchase-instagram',
-  templateUrl: 'in-app-purchase-instagram.html',
+  selector: 'page-in-app-purchase-fb-laugh',
+  templateUrl: 'in-app-purchase-fb-laugh.html',
 })
-export class InAppPurchaseInstagramPage {
+export class InAppPurchaseFbLaughPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private iap: InAppPurchase, private nativeStorage: NativeStorage) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private iap: InAppPurchase, 
+    private nativeStorage: NativeStorage,
+  ) {
   }
 
   ionViewDidLoad() {
@@ -23,12 +28,11 @@ export class InAppPurchaseInstagramPage {
 
   getProducts(){
     this.iap
-    .getProducts(['prod2_sub'])
+    .getProducts(['prod_fb_laugh_sub'])
     .then((products) => {
-      alert(JSON.stringify(products));
+       
     })
     .catch((err) => {
-      alert(JSON.stringify(err));
     });
   }
 
@@ -36,9 +40,7 @@ export class InAppPurchaseInstagramPage {
     this.iap
     .restorePurchases()
     .then((data) => {
-      // alert("Success Restore Products :"+JSON.stringify(data));
     }).catch((err) => {
-      // alert("Error Restore Products :"+JSON.stringify(err));
     });
   }
   
@@ -46,11 +48,11 @@ export class InAppPurchaseInstagramPage {
   buyProducts(){
     let env = this;
     this.iap
-    .subscribe('prod2_sub')
-      .then((data:any) => {
-      env.nativeStorage.setItem('whoViewedInstagramProfile', "True")
+    .subscribe('prod_fb_laugh_sub')
+    .then((data:any)=> {
+      env.nativeStorage.setItem('prod_fb_laugh', "True")
       .then(
-        () => env.navCtrl.pop()
+        () => env.navCtrl.pop(),
       );
     })
     .catch((err)=> {

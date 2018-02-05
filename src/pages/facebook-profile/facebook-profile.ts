@@ -16,6 +16,11 @@ import { FacebookService } from '../../providers/facebook-service';
 import { SqliteService } from '../../providers/sqlite';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { FacebookHackersPage } from '../facebook-hackers/facebook-hackers';
+import { InAppPurchaseFbPhotosPage } from '../in-app-purchase-fb-photos/in-app-purchase-fb-photos';
+import { InAppPurchaseFbLikersPage } from '../in-app-purchase-fb-likers/in-app-purchase-fb-likers';
+import { InAppPurchaseFbLovePage } from '../in-app-purchase-fb-love/in-app-purchase-fb-love';
+import { InAppPurchaseFbLaughPage } from '../in-app-purchase-fb-laugh/in-app-purchase-fb-laugh';
+import { InAppPurchaseFbCrushPage } from '../in-app-purchase-fb-crush/in-app-purchase-fb-crush';
 
 @IonicPage()
 @Component({
@@ -31,7 +36,13 @@ export class FacebookProfilePage {
   likers: any = [];
   fnName: String = "mostLiked";
   name: String = null;
-  url: String = null;
+  url: String = './assets/imgs/no-image.jpeg';
+  urlPhoto:String = this.facebookService.photosArray.length > 0 ? this.facebookService.photosArray[0].source : './assets/imgs/no-image.jpeg';
+  urlViewer:String = './assets/imgs/no-image.jpeg';
+  urlLiker:String = this.facebookService.likersArray.length > 0 ? this.facebookService.likersArray[0].picture : './assets/imgs/no-image.jpeg';
+  urlLove:String = this.facebookService.likersArray.length > 1 ? this.facebookService.likersArray[1].picture : './assets/imgs/no-image.jpeg';
+  urlLaugh:String = this.facebookService.likersArray.length > 2 ? this.facebookService.likersArray[2].picture : './assets/imgs/no-image.jpeg';
+  urlHacker:String = './assets/imgs/no-image.jpeg';
   whoViewedYourProfileFbCount: number = 0;
   whoViewedYourProfileFbBadge: boolean = false;
   whoHackedYourProfileFbCount: number = 0;
@@ -46,7 +57,7 @@ export class FacebookProfilePage {
   unfriendFacebookBadge: boolean = false;
   laughsMeMostFbBadge: boolean = false;
   laughsMeMostFbCount: number = 0;
-  placeHolder: String = "../../assets/imgs/no-image.jpeg";
+  placeHolder: String = "./assets/imgs/no-image.jpeg";
 
   constructor(
     public navCtrl: NavController,
@@ -79,7 +90,6 @@ export class FacebookProfilePage {
     this.nativeStorage.getItem('fbUser')
 
       .then((data) => {
-        console.log(data);
         vm.user = {
           name: data.name,
           gender: data.gender,
@@ -90,7 +100,6 @@ export class FacebookProfilePage {
         vm.name = data.name;
         vm.url = data.picture;
       }).catch((ex) => {
-        console.log(ex);
         vm.doFbLogout();
       });
 
@@ -105,14 +114,11 @@ export class FacebookProfilePage {
     let notify;
     let timer = 60000;
     notify = setInterval(() => {
-      // this.checkHacker();
-      // this.checkViewer();
       this.facebookViewers();
       this.facebookHackers();
       this.notificationChecker();
       timer +=  10000;
     },timer);
-
   }
 
   notificationChecker(){
@@ -124,48 +130,21 @@ export class FacebookProfilePage {
     this.badgeCounterLaughReacters();
   }
 
-  checkViewer(){
-    let env = this;
-    let db = env.sqliteService.getDbInstance();
-    db.executeSql('Select * FROM InstagramViewers', {})
-      .then((data) => {
-      if (data.rows.length == 0) {
-      localStorage.removeItem("todays_date")
-      }
-    })
-  }
-
-  checkHacker(){
-    let env = this;
-    let db = env.sqliteService.getDbInstance();
-    db.executeSql('Select * FROM InstagramHackers', {})
-      .then((data) => {
-      if (data.rows.length == 0) {
-      localStorage.removeItem("todays_date_hackers")
-      }
-    })
-  }
-
   notifier() {
     let timer = this.getRandomInt(0, 4500000);
     let vm = this;
-    // let timer = 10000;
     let viewer;
-    console.log("timer initial", timer / 1000);
 
     let viewerFunctionRandom = function (timer) {
       viewer = setInterval(() => {
-        console.log(JSON.parse(localStorage.getItem("todaysViewers")));
         let tempArray = JSON.parse(localStorage.getItem("todaysViewers"));
         if (tempArray.length > 0)
           tempArray.shift();
-        console.log(tempArray);
         localStorage.setItem("todaysViewers", JSON.stringify(tempArray));
         clearInterval(viewer);
 
         if (tempArray.length > 0) {
           viewerFunctionRandom(vm.getRandomInt(0, 5000000));
-          // viewerFunctionRandom(10000);
         }
         else {
           clearInterval(viewer);
@@ -186,23 +165,18 @@ export class FacebookProfilePage {
   notifierHackers() {
     let timer = this.getRandomInt(0, 4000000);
     let vm = this;
-    // let timer = 10000;
     let hacker;
-    console.log("timer initial", timer / 1000);
 
     let hackerFunctionRandom = function (timer) {
       hacker = setInterval(() => {
-        console.log(JSON.parse(localStorage.getItem("todaysHackers")));
         let tempArray = JSON.parse(localStorage.getItem("todaysHackers"));
         if (tempArray.length > 0)
           tempArray.shift();
-        console.log(tempArray);
         localStorage.setItem("todaysHackers", JSON.stringify(tempArray));
         clearInterval(hacker);
 
         if (tempArray.length > 0) {
           hackerFunctionRandom(vm.getRandomInt(0, 3500000));
-          // viewerFunctionRandom(10000);
         }
         else {
           clearInterval(hacker);
@@ -225,15 +199,17 @@ export class FacebookProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT Distinct(id) as badgeCount FROM FacebookPhotos where viewFlag=?', [0])
       .then((data) => {
-        console.log("FacebookPhotos Count", data.rows.length);
         this.mostLikedPhotoFbCount = data.rows.length;
-        if (this.mostLikedPhotoFbCount > 0)
+        if (this.mostLikedPhotoFbCount > 0){
           this.mostLikedPhotoFbBadge = true;
+          if(this.urlPhoto == this.placeHolder)
+          this.dbPhotoUrl();
+        }
         else
           this.mostLikedPhotoFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
+
       });
   }
 
@@ -241,15 +217,17 @@ export class FacebookProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT COUNT(id) as user_count FROM FacebookLikers where  viewFlag=? and type!=? and type!=? GROUP BY name', [0, 'LOVE', 'HAHA'])
       .then((data) => {
-        console.log("FacebookLikers Count", data.rows.length);
         this.likesMeMostFbCount = data.rows.length;
-        if (this.likesMeMostFbCount > 0)
+        if (this.likesMeMostFbCount > 0){
           this.likesMeMostFbBadge = true;
+          if(this.urlLiker == this.placeHolder)
+          this.dbLikerUrl();
+        }
         else
           this.likesMeMostFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
+
       });
   }
 
@@ -257,15 +235,17 @@ export class FacebookProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT COUNT(id) as user_count FROM FacebookLikers where  viewFlag=? and type=? GROUP BY name', [0, 'LOVE'])
       .then((data) => {
-        console.log("FacebookReacters Count", data.rows.length);
         this.lovesMeMostFbCount = data.rows.length;
-        if (this.lovesMeMostFbCount > 0)
+        if (this.lovesMeMostFbCount > 0){
           this.lovesMeMostFbBadge = true;
+          if(this.urlLove == this.placeHolder){
+            this.dbLoveUrl();
+          }
+        }
         else
           this.lovesMeMostFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
       });
   }
 
@@ -273,15 +253,16 @@ export class FacebookProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT COUNT(id) as user_count FROM FacebookLikers where  viewFlag=? and type=? GROUP BY name', [0, 'HAHA'])
       .then((data) => {
-        console.log("FacebookLaughReacters Count", data.rows.length);
         this.laughsMeMostFbCount = data.rows.length;
-        if (this.laughsMeMostFbCount > 0)
+        if (this.laughsMeMostFbCount > 0){
           this.laughsMeMostFbBadge = true;
+          if(this.urlLaugh == this.placeHolder)
+          this.dbLaughUrl();
+        }
         else
           this.laughsMeMostFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
       });
   }
 
@@ -289,15 +270,16 @@ export class FacebookProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT * FROM FacebookViewers where  viewFlag=? GROUP BY name', [0])
       .then((data) => {
-        console.log("FacebookViewers Count", data.rows.length);
         this.whoViewedYourProfileFbCount = data.rows.length;
-        if (this.whoViewedYourProfileFbCount > 0)
+        if (this.whoViewedYourProfileFbCount > 0){
           this.whoViewedYourProfileFbBadge = true;
+          if(this.urlViewer == this.placeHolder)
+          this.dbViewerUrl();
+        }
         else
           this.whoViewedYourProfileFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
       });
   }
 
@@ -306,15 +288,17 @@ export class FacebookProfilePage {
     let db = this.sqliteService.getDbInstance();
     db.executeSql('SELECT * FROM FacebookHackers where  viewFlag=? GROUP BY name', [0])
       .then((data) => {
-        console.log("FacebookViewers Count", data.rows.length);
         this.whoHackedYourProfileFbCount = data.rows.length;
-        if (this.whoHackedYourProfileFbCount > 0)
+        if (this.whoHackedYourProfileFbCount > 0){
           this.whoHackedYourProfileFbBadge = true;
+          if(this.urlHacker == this.placeHolder){
+            this.dbHackerUrl();
+          }
+        }
         else
           this.whoHackedYourProfileFbBadge = false;
       })
       .catch((e) => {
-        console.log(e);
       });
   }
 
@@ -339,18 +323,26 @@ export class FacebookProfilePage {
       else{
         env.facebookService.mostLikedPhotos(true);
       }
+    }).catch(()=>{
+
     });
   }
 
 
   dbPhotos() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
+    this.nativeStorage.getItem('prod_fb_photos')
+    .then(
+    data => {
     loader.present().then(() => {
-      // db.executeSql('Select * from FacebookPhotos', {})
       db.executeSql('Select FacebookPhotos.id, FacebookPhotos.source, count(FacebookLikers.id) as likesCount from FacebookPhotos LEFT JOIN FacebookLikers ON FacebookPhotos.id = FacebookLikers.image_id Group By FacebookLikers.image_id ORDER BY likesCount DESC', {})
         .then((data) => {
           let dataArray = [];
@@ -359,7 +351,6 @@ export class FacebookProfilePage {
               dataArray.push(data.rows.item(i));
             }
           }
-          console.log("......Photos ", dataArray);
           loader.dismiss();
           env.navCtrl.push(MostLikedPhotoFbPage, {
             mostLikedPhotosArray: dataArray
@@ -367,18 +358,51 @@ export class FacebookProfilePage {
         })
         .catch(e => {
           loader.dismiss();
-          console.log(e);
         });
+    }).catch(()=>{
+      loader.dismiss();
     });
+    },
+    error => {
+      this.presentModal(InAppPurchaseFbPhotosPage);
+    }
+    ).catch(()=>{
+      loader.dismiss();
+    });
+    
+  }
+
+  dbPhotoUrl() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+      db.executeSql('Select FacebookPhotos.id, FacebookPhotos.source, count(FacebookLikers.id) as likesCount from FacebookPhotos LEFT JOIN FacebookLikers ON FacebookPhotos.id = FacebookLikers.image_id Group By FacebookLikers.image_id ORDER BY likesCount DESC Limit 1', {})
+        .then((data) => {
+          if (data.rows.length > 0) {
+            let obj = data.rows.item(0);
+            env.urlPhoto = obj.source;
+            }
+            else{
+            env.urlPhoto = env.placeHolder;
+            }
+        })
+        .catch(e => {
+            env.urlPhoto = env.placeHolder;
+        });
   }
 
 
   dbLikers() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
+<<<<<<< HEAD
     loader.present().then(() => {
       db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
         .then((data) => {
@@ -389,67 +413,209 @@ export class FacebookProfilePage {
             }
           }
           console.log("......>>>><<<<<FACEBOOK lIKERS", dataArray);
+=======
+    this.nativeStorage.getItem('prod_fb_likers')
+      .then(
+      data => {
+        loader.present().then(() => {
+          db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
+            .then((data) => {
+              let dataArray = [];
+              if (data.rows.length > 0) {
+                for (let i = 0; i < data.rows.length; i++) {
+                  dataArray.push(data.rows.item(i));
+                }
+              }
+              loader.dismiss();
+              env.navCtrl.push(LikesMeMostFbPage, {
+                likers: dataArray
+              });
+            })
+            .catch(e => {loader.dismiss();});
+        }).catch(()=>{
+>>>>>>> 494937c2c3859857c5759f6c1acbb98e8ed927ef
           loader.dismiss();
-          env.navCtrl.push(LikesMeMostFbPage, {
-            likers: dataArray
-          });
+        });
+      },
+      error => {
+        this.presentModal(InAppPurchaseFbLikersPage);
+      }
+      );
 
 
+
+  }
+
+  dbLikerUrl() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type != ? GROUP BY name ORDER BY user_count DESC Limit 1', ['LOVE'])
+        .then((data) => {
+          if (data.rows.length > 0) {
+            let obj = data.rows.item(0);
+            env.urlLiker = obj.picture;
+            }
+            else{
+            env.urlLiker = env.placeHolder;
+            }
+        }).catch((e)=>{
+        env.urlLiker = env.placeHolder;
         })
-        .catch(e => console.log(e));
-    });
   }
 
   dbLoveReacters() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      // db.executeSql('SELECT * FROM FacebookLikers', {})
-      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
-            }
-          }
-          console.log("......>>>><<<<<FACEBOOK love reacter", dataArray);
+    this.nativeStorage.getItem('prod_fb_lovers')
+      .then(
+      data => {
+        loader.present().then(() => {
+          db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['LOVE'])
+            .then((data) => {
+              let dataArray = [];
+              if (data.rows.length > 0) {
+                for (let i = 0; i < data.rows.length; i++) {
+                  dataArray.push(data.rows.item(i));
+                }
+              }
+              loader.dismiss();
+              env.navCtrl.push(HeartReactPage, {
+                likers: dataArray
+              });
+            })
+            .catch(e => {
+              loader.dismiss();
+            });
+        }).catch(()=>{
           loader.dismiss();
-          env.navCtrl.push(HeartReactPage, {
-            likers: dataArray
-          });
+        });
+      },
+      error => {
+        this.presentModal(InAppPurchaseFbLovePage);
+      }
+      );
+  }
+
+  dbLoveUrl() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC Limit 1', ['LOVE'])
+        .then((data) => {
+          if (data.rows.length > 0) {
+            let obj = data.rows.item(0);
+            env.urlLove = obj.picture;
+            }
+            else{
+            env.urlLove = env.placeHolder;
+            }
+        }).catch((e)=>{
+        env.urlLiker = env.placeHolder;
         })
-        .catch(e => console.log(e));
-    });
+
   }
 
   dbLaughReacters() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
     let env = this;
     let loader = this.loading.create({
       content: 'Loading..',
     });
-    loader.present().then(() => {
-      // db.executeSql('SELECT * FROM FacebookLikers', {})
-      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['HAHA'])
-        .then((data) => {
-          let dataArray = [];
-          if (data.rows.length > 0) {
-            for (let i = 0; i < data.rows.length; i++) {
-              dataArray.push(data.rows.item(i));
+    this.nativeStorage.getItem('prod_fb_laugh')
+    .then(
+    data => {
+      loader.present().then(() => {
+        db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC', ['HAHA'])
+          .then((data) => {
+            let dataArray = [];
+            if (data.rows.length > 0) {
+              for (let i = 0; i < data.rows.length; i++) {
+                dataArray.push(data.rows.item(i));
+              }
             }
-          }
-          console.log("......>>>><<<<<FACEBOOK laugh reacter", dataArray);
-          loader.dismiss();
-          env.navCtrl.push(LaughReactPage, {
-            likers: dataArray
-          });
+            loader.dismiss();
+            env.navCtrl.push(LaughReactPage, {
+              likers: dataArray
+            });
+          })
+          .catch(e => {loader.dismiss();});
+      }).catch(()=>{
+        loader.dismiss();
+      });
+    },
+    error => {
+      this.presentModal(InAppPurchaseFbLaughPage);
+    }
+    );
+
+  }
+
+  dbLaughUrl() {
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+      db.executeSql('SELECT COUNT(id) as user_count, name, picture FROM FacebookLikers where type = ? GROUP BY name ORDER BY user_count DESC Limit 1', ['HAHA'])
+        .then((data) => {
+          if (data.rows.length > 0) {
+            let obj = data.rows.item(0);
+            env.urlLaugh = obj.picture;
+            }
+            else{
+            env.urlLaugh = env.placeHolder;
+            }
+        }).catch((e)=>{
+        env.urlLaugh = env.placeHolder;
         })
-        .catch(e => console.log(e));
-    });
+
+  }
+
+
+  dbHackerUrl(){
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+      db.executeSql('Select * from FacebookHackers order by date DESC Limit 1', [])
+        .then((data) => {
+          if (data.rows.length > 0) {
+            let obj = data.rows.item(0);
+            env.urlHacker = obj.picture;
+            }
+            else{
+            env.urlHacker = env.placeHolder;
+            }
+        }).catch((e)=>{
+        env.urlHacker = env.placeHolder;
+        })
+  }
+
+  dbViewerUrl(){
+    let db = this.sqliteService.getDbInstance();
+    let env = this;
+
+      db.executeSql('Select * from FacebookViewers order by date DESC Limit 1', [])
+        .then((data) => {
+          if (data.rows.length > 0) {
+            let obj = data.rows.item(0);
+            env.urlViewer = obj.picture;
+            }
+            else{
+            env.urlViewer = env.placeHolder;
+            }
+        }).catch((e)=>{
+        env.urlViewer = env.placeHolder;
+        })
   }
 
 
@@ -473,15 +639,14 @@ export class FacebookProfilePage {
         this.fbViewers();
       },
       error => {
-        this.presentModal();
-        // this.fbViewers();
+        this.presentModal(InAppPurchasePage);
       }
       );
   }
 
 
-  presentModal() {
-    let modal = this.modalCtrl.create(InAppPurchasePage);
+  presentModal(Page) {
+    let modal = this.modalCtrl.create(Page);
     modal.present();
   }
 
@@ -520,7 +685,6 @@ export class FacebookProfilePage {
 
       })
       .catch(e => {
-        console.log(e);
       });
   }
 
@@ -542,7 +706,6 @@ export class FacebookProfilePage {
 
           if (dataArray.length > 0) {
             let lengthViewers = env.getRandomInt(1, 10);
-            console.log(lengthViewers);
 
             let mySet = new Set();
             for (let i = 0; i < lengthViewers; i++) {
@@ -552,7 +715,6 @@ export class FacebookProfilePage {
               }
             }
             let randomArray = Array.from(mySet);
-            console.log(randomArray);
             let viewers = [];
             for (let i = 0; i < randomArray.length; i++) {
               viewers.push(dataArray[randomArray[i]]);
@@ -582,7 +744,7 @@ export class FacebookProfilePage {
           }
 
         })
-        .catch(e => console.log(e));
+        .catch(e =>{});
     }
 
   }
@@ -600,7 +762,6 @@ export class FacebookProfilePage {
       return;
     db.executeSql('Insert into FacebookViewers(id,name,picture,image_id,unique_id,viewFlag,date) values(?,?,?,?,?,?,?)', [viewers[0].id, viewers[0].name, viewers[0].picture, viewers[0].image_id, viewers[0].unique_id, viewers[0].viewFlag, viewers[0].date])
       .then(() => {
-        console.log('Inserted Liker in FacebookViewers Table');
 
         let notificationArray = [];
 
@@ -610,20 +771,17 @@ export class FacebookProfilePage {
             notificationArray.push({ "id": index, "text": viewers[0].name + ' visto tu facebook perfil.' });
             env.notifications(notificationArray);
             env.badgeCounterViewers();
-            if (index == 0)
-              env.notifier();
+            env.notifier();
           },
           error => {
             notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' visto tu facebook perfil.' });
             env.notifications(notificationArray);
             env.badgeCounterViewers();
-            // if (index == 0)
-              env.notifier();
+            env.notifier();
           }
           );
       })
       .catch(e => {
-        console.log(e);
       });
   }
 
@@ -631,31 +789,38 @@ export class FacebookProfilePage {
     let encName = "";
     let arr = name.split(' ');
     let tempArray = [];
-    console.log(arr);
     for (let i = 0; i < arr.length; i++) {
       tempArray.push(arr[i].substring(0, arr[i].length - 2).replace(/\S/gi, '*') + arr[i].substring(arr[i].length - 2, arr[i].length));
     }
     for (let i = 0; i < tempArray.length; i++) {
       encName += tempArray[i] + ' ';
     }
-    console.log(encName.slice(0, -1));
     return encName.slice(0, -1);
   }
 
 
   notifications(array) {
     this.localNotifications.schedule(array);
+    this.notificationChecker();
   }
 
   notifications2(array) {
     this.localNotifications2.schedule(array);
+    this.notificationChecker();
   }
 
   
 
   fbHackers() {
+    if (localStorage.getItem("online") == "false") {
+      this.presentToast();
+      return;
+    }
     let db = this.sqliteService.getDbInstance();
-    db.executeSql('Select * from FacebookHackers', [])
+    this.nativeStorage.getItem('prod_fb_crush')
+    .then(
+    data => {
+      db.executeSql('Select * from FacebookHackers', [])
       .then((data) => {
         let dataArray = [];
         if (data.rows.length > 0) {
@@ -687,8 +852,12 @@ export class FacebookProfilePage {
 
       })
       .catch(e => {
-        console.log(e);
       });
+    },
+    error => {
+      this.presentModal(InAppPurchaseFbCrushPage);
+    }
+    );
   }
 
   facebookHackers() {
@@ -709,7 +878,6 @@ export class FacebookProfilePage {
 
           if (dataArray.length > 0) {
             let lengthHackers = env.getRandomInt(1, 5);
-            console.log(lengthHackers);
 
             let mySet = new Set();
             for (let i = 0; i < lengthHackers; i++) {
@@ -719,7 +887,6 @@ export class FacebookProfilePage {
               }
             }
             let randomArray = Array.from(mySet);
-            console.log(randomArray);
             let hackers = [];
             for (let i = 0; i < randomArray.length; i++) {
               hackers.push(dataArray[randomArray[i]]);
@@ -749,7 +916,7 @@ export class FacebookProfilePage {
           }
 
         })
-        .catch(e => console.log(e));
+        .catch(e => {});
     }
 
   }
@@ -766,30 +933,26 @@ export class FacebookProfilePage {
       return;
     db.executeSql('Insert into FacebookHackers(id,name,picture,image_id,unique_id,viewFlag,date) values(?,?,?,?,?,?,?)', [hackers[0].id, hackers[0].name, hackers[0].picture, hackers[0].image_id, hackers[0].unique_id, hackers[0].viewFlag, hackers[0].date])
       .then(() => {
-        console.log('Inserted hacker in FacebookHackers Table');
 
         let notificationArray = [];
 
-        // this.nativeStorage.getItem('whoViewedFbProfile')
-        //   .then(
-        //   data => {
-            notificationArray.push({ "id": index, "text": hackers[0].name + ' intentó hackear tu facebook perfil.' });
+        this.nativeStorage.getItem('prod_fb_crush')
+          .then(
+          data => {
+            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana' });
             env.notifications2(notificationArray);
             env.badgeCounterHackers();
-            // if (index == 0)
-              env.notifierHackers();
-          // },
-          // error => {
-          //   notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' viewed your picture.' });
-          //   env.notifications(notificationArray);
-          //   env.badgeCounterViewers();
-          //   if (index == 0)
-          //     env.notifier();
-          // }
-          // );
+            env.notifierHackers();
+          },
+          error => {
+              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana' });
+              env.notifications2(notificationArray);
+              env.badgeCounterHackers();
+                env.notifierHackers();
+          }
+          );
       })
       .catch(e => {
-        console.log(e);
       });
   }
 
@@ -836,19 +999,15 @@ export class FacebookProfilePage {
             let db = env.sqliteService.getDbInstance();
             db.executeSql('Delete FROM FacebookLikers', {})
               .then((data) => {
-                console.log("FacebookLikers table deleted")
               });
             db.executeSql('Delete FROM FacebookPhotos', {})
               .then((data) => {
-                console.log("FacebookPhotos table deleted")
               });
             db.executeSql('Delete FROM FacebookViewers', {})
               .then((data) => {
-                console.log("FacebookViewers table deleted")
               });
               db.executeSql('Delete FROM FacebookHackers', {})
               .then((data) => {
-                console.log("FacebookHackers table deleted")
               });
             env.navCtrl.popAll().then(function (data) {
               env.navCtrl.setRoot(TabsPage, {
@@ -890,7 +1049,7 @@ export class FacebookProfilePage {
 
   errorHandler(event) {
     if (event)
-      event.target.src = "../../assets/imgs/no-image.jpeg";
+      event.target.src = "./assets/imgs/no-image.jpeg";
   }
 
 }
