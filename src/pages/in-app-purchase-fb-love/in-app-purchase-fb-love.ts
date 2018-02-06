@@ -19,7 +19,7 @@ export class InAppPurchaseFbLovePage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal() {

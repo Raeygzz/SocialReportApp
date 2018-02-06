@@ -19,7 +19,7 @@ export class InAppPurchaseInLikersPage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal(){

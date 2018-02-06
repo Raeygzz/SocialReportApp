@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
-import { InAppPurchase } from '@ionic-native/in-app-purchase';
 
 @IonicPage()
 @Component({
@@ -13,41 +12,48 @@ export class SettingsPage {
   hideSubscribedFacebook:boolean = false;
   hideSubscribedInstagram:boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage, private iap: InAppPurchase) {
-    this.getProducts();
+  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage) {
+    
   }
 
   ionViewWillEnter(){
-    let env = this;
-    this.nativeStorage.getItem('whoViewedInstagramProfile').then((data)=>{
-      env.hideSubscribedInstagram = true;
-    });
-    this.nativeStorage.getItem('whoViewedFbProfile').then((data)=>{
-      env.hideSubscribedFacebook = true;
-    });
+    this.getProducts();
   }
 
   cancelSubscriptionInstagram(){
-    let env = this;
-    this.nativeStorage.remove('whoViewedInstagramProfile').then(()=>{
-      env.hideSubscribedInstagram = true;
-    });
+    this.nativeStorage.remove('prod_in_crush');
+    this.nativeStorage.remove('prod_in_likers');
+    this.nativeStorage.remove('prod_in_photos');
+    this.nativeStorage.remove('whoViewedInstagramProfile');
+    this.hideSubscribedInstagram = false;
   }
 
   cancelSubscriptionFacebook(){
-    let env = this;
-    this.nativeStorage.remove('whoViewedFbProfile').then(()=>{
-      env.hideSubscribedFacebook = true;
-    });
+    this.nativeStorage.remove('whoViewedFbProfile');
+    this.nativeStorage.remove('prod_fb_crush');
+    this.nativeStorage.remove('prod_fb_laugh');
+    this.nativeStorage.remove('prod_fb_likers');
+    this.nativeStorage.remove('prod_fb_lovers');
+    this.nativeStorage.remove('prod_fb_photos');
+    this.hideSubscribedFacebook = false;
   }
 
   getProducts(){
-    this.iap
-    .getProducts(['prod_in_photos_sub'])
-    .then((products) => {
-       alert(JSON.stringify(products));
-    })
-    .catch((err) => {
+    let env = this;
+    this.nativeStorage.keys().then((data)=>{
+      if(data.indexOf("whoViewedFbProfile") != -1 || data.indexOf("prod_fb_crush") != -1 || data.indexOf("prod_fb_laugh") != -1 || data.indexOf("prod_fb_likers") != -1 || data.indexOf("prod_fb_lovers") != -1 || data.indexOf("prod_fb_photos") != -1){
+        env.hideSubscribedFacebook = true;
+      }
+      else{
+        env.hideSubscribedFacebook = false;
+      }
+
+      if(data.indexOf("prod_in_crush") != -1 || data.indexOf("prod_in_likers") != -1 || data.indexOf("prod_in_photos") != -1 || data.indexOf("whoViewedInstagramProfile") != -1){
+        env.hideSubscribedInstagram = true;
+      }
+      else{
+        env.hideSubscribedInstagram = false;
+      }
     });
   }
 

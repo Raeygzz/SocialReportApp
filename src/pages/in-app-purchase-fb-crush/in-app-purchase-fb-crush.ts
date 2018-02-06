@@ -19,7 +19,7 @@ export class InAppPurchaseFbCrushPage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal(){

@@ -20,7 +20,7 @@ export class InAppPurchasePage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal() {

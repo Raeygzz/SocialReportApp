@@ -19,7 +19,7 @@ export class InAppPurchaseInCrushPage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal(){
@@ -62,7 +62,7 @@ export class InAppPurchaseInCrushPage {
 
       })
     }).catch((err) => {
-      alert(JSON.stringify(err));
+      // alert(JSON.stringify(err));
       if (err.code == '-6' || err.code == '-9') {
         env.nativeStorage.setItem('prod_in_crush', "True")
           .then(

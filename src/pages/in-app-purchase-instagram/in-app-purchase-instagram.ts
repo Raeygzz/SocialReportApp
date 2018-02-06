@@ -14,7 +14,7 @@ export class InAppPurchaseInstagramPage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal(){

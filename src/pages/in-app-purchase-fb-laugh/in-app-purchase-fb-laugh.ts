@@ -19,7 +19,7 @@ export class InAppPurchaseFbLaughPage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal(){

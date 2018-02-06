@@ -19,7 +19,7 @@ export class InAppPurchaseFbPhotosPage {
   }
 
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();
   }
 
   closeModal(){

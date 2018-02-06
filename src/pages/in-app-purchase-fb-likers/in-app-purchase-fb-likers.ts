@@ -23,7 +23,7 @@ export class InAppPurchaseFbLikersPage {
   }
 
   closeModal(){
-    this.navCtrl.pop();
+    // this.navCtrl.pop();
   }
 
   getProducts(){
