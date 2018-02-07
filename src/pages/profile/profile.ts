@@ -31,9 +31,9 @@ export class ProfilePage {
   name: string = null;
   url: String = './assets/imgs/no-image.jpeg';
   urlPhoto:String = this.instagramService.photosArray.length > 0 ? this.instagramService.photosArray[0].source : './assets/imgs/no-image.jpeg';
-  urlViewer:String = './assets/imgs/no-image.jpeg';
-  urlLiker:String = this.instagramService.likersArray.length > 0 ? this.instagramService.likersArray[0].picture : './assets/imgs/no-image.jpeg';
-  urlHacker:String = './assets/imgs/no-image.jpeg';
+  urlViewer:String = this.instagramService.photosArray.length > 1 ? this.instagramService.photosArray[1].picture : './assets/imgs/no-image.jpeg';
+  urlLiker:String = this.instagramService.photosArray.length > 2 ? this.instagramService.photosArray[2].picture : './assets/imgs/no-image.jpeg';
+  urlHacker:String = this.instagramService.photosArray.length > 3 ? this.instagramService.photosArray[3].picture : './assets/imgs/no-image.jpeg';
 
   youLikeMostCount: number = 0;
   youLikeMostBadge: boolean = false;
@@ -535,13 +535,13 @@ export class ProfilePage {
         this.nativeStorage.getItem('prod_in_crush')
           .then(
           data => {
-            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana' });
+            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana' , icon: './assets/icon/notification.png'});
             env.notifications2(notificationArray);
             env.badgeCounterHackers();
             env.notifierHackers();
           },
           error => {
-              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana' });
+              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana' , icon: './assets/icon/notification.png'});
               env.notifications2(notificationArray);
               env.badgeCounterHackers();
                 env.notifierHackers();
@@ -684,14 +684,14 @@ export class ProfilePage {
         this.nativeStorage.getItem('whoViewedInstagramProfile')
           .then(
           data => {
-            notificationArray.push({ "id": index, "text": viewers[0].name + ' visto tu instagram perfil.' })
+            notificationArray.push({ "id": index, "text": viewers[0].name + ' Acaba de ver tu perfil de Instagram.', icon: './assets/icon/notification.png' })
             env.notifications(notificationArray);
             env.badgeCounterViewers();
             if (index == 0)
               env.notifier();
           },
           error => {
-            notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' visto tu instagram perfil.' })
+            notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' Acaba de ver tu perfil de Instagram.', icon: './assets/icon/notification.png' })
             env.notifications(notificationArray);
             env.badgeCounterViewers();
             if (index == 0)

@@ -18,6 +18,7 @@ import { SqliteService } from '../../providers/sqlite';
 export class FacebookHomePage {
 
   isFbLoggedIn: boolean = false;
+  pageReady: boolean = false;
   FB_APP_ID: number = 753939148127516;
 
   constructor(
@@ -52,11 +53,13 @@ export class FacebookHomePage {
           //   .then((data) => {
           //     if (data.rows.length > 0) {
                 this.isFbLoggedIn = true;
+                this.pageReady = true;
             //   }
             // });
 
         },
         error => {
+          this.pageReady = true;
           localStorage.setItem("newFbLogin", "true");
           loader.dismiss();
         }

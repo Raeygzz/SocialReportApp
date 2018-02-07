@@ -6,15 +6,13 @@
 
 </ion-header>
 
-
-
 <ion-content class="instagramHome" padding>
+  <div *ngIf="pageReady">
+    <h3 ion-text color="light" style="padding-top:30vh;text-align:center">
+      ¡Descubre quien te ve secretamente tu perfil en Instagram!
+    </h3>
 
-  <h3 ion-text color="light" style="padding-top:30vh;text-align:center">
-    ¡Descubre quien te ve secretamente tu perfil en Instagram!
-  </h3>
-
-  <button *ngIf="!isLoggedIn" ion-button color="light" style="text-transform: none;" (click)="instagramLogin()" full>Iniciar sesión en Instagram</button>
-  <button *ngIf="isLoggedIn" ion-button color="light" style="text-transform: none;" (click)="instagramReports()" full>Informes abiertos de Instagram</button>
-
+    <button *ngIf="!isLoggedIn" ion-button color="light" style="text-transform: none;" (click)="instagramLogin()" full>Iniciar sesión en Instagram</button>
+    <button *ngIf="isLoggedIn" ion-button color="light" style="text-transform: none;" (click)="instagramReports()" full>Informes abiertos de Instagram</button>
+  </div>
 </ion-content>

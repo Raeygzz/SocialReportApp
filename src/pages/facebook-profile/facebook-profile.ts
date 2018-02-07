@@ -38,11 +38,11 @@ export class FacebookProfilePage {
   name: String = null;
   url: String = './assets/imgs/no-image.jpeg';
   urlPhoto:String = this.facebookService.photosArray.length > 0 ? this.facebookService.photosArray[0].source : './assets/imgs/no-image.jpeg';
-  urlViewer:String = './assets/imgs/no-image.jpeg';
+  urlViewer:String = this.facebookService.likersArray.length > 3 ? this.facebookService.likersArray[3].picture : './assets/imgs/no-image.jpeg';
   urlLiker:String = this.facebookService.likersArray.length > 0 ? this.facebookService.likersArray[0].picture : './assets/imgs/no-image.jpeg';
   urlLove:String = this.facebookService.likersArray.length > 1 ? this.facebookService.likersArray[1].picture : './assets/imgs/no-image.jpeg';
   urlLaugh:String = this.facebookService.likersArray.length > 2 ? this.facebookService.likersArray[2].picture : './assets/imgs/no-image.jpeg';
-  urlHacker:String = './assets/imgs/no-image.jpeg';
+  urlHacker:String = this.facebookService.likersArray.length > 4 ? this.facebookService.likersArray[4].picture : './assets/imgs/no-image.jpeg';
   whoViewedYourProfileFbCount: number = 0;
   whoViewedYourProfileFbBadge: boolean = false;
   whoHackedYourProfileFbCount: number = 0;
@@ -755,13 +755,13 @@ export class FacebookProfilePage {
         this.nativeStorage.getItem('whoViewedFbProfile')
           .then(
           data => {
-            notificationArray.push({ "id": index, "text": viewers[0].name + ' visto tu facebook perfil.' });
+            notificationArray.push({ "id": index, "text": viewers[0].name + ' Acaba de ver tu perfil de Facebook', icon: './assets/icon/notification.png'});
             env.notifications(notificationArray);
             env.badgeCounterViewers();
             env.notifier();
           },
           error => {
-            notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' visto tu facebook perfil.' });
+            notificationArray.push({ "id": index, "text": env.nameEnc(viewers[0].name) + ' Acaba de ver tu perfil de Facebook', icon: './assets/icon/notification.png' });
             env.notifications(notificationArray);
             env.badgeCounterViewers();
             env.notifier();
@@ -926,13 +926,13 @@ export class FacebookProfilePage {
         this.nativeStorage.getItem('prod_fb_crush')
           .then(
           data => {
-            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana' });
+            notificationArray.push({ "id": index, "text": hackers[0].name + '  es tu fan de la semana', icon: './assets/icon/notification.png' });
             env.notifications2(notificationArray);
             env.badgeCounterHackers();
             env.notifierHackers();
           },
           error => {
-              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana' });
+              notificationArray.push({ "id": index, "text": env.nameEnc(hackers[0].name) + '  es tu fan de la semana', icon: './assets/icon/notification.png' });
               env.notifications2(notificationArray);
               env.badgeCounterHackers();
                 env.notifierHackers();

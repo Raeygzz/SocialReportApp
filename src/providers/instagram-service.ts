@@ -97,8 +97,6 @@ export class InstagramService {
 
                     if (env.likersArray.length < 6)
                     env.likersArray.push(likerData);
-                    else
-                    resolve(true);
                     
                   }
 
@@ -136,8 +134,12 @@ export class InstagramService {
                 };
                 data.data.inserts.InstagramPhotos.push(photoData);
 
-                if (env.photosArray.length < 6)
+                if (env.photosArray.length < 6){
                   env.photosArray.push(photoData);
+                }
+                else{
+                  resolve(true);
+                }
 
               }
 
