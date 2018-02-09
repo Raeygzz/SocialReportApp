@@ -94,8 +94,14 @@ export class FacebookService {
 
                 data.data.inserts.FacebookPhotos.push(photoData);
 
-                if (env.photosArray.length < 6)
-                  env.photosArray.push(photoData);
+                  if (env.photosArray.length < 6){
+                    env.photosArray.push(photoData);
+                  }
+                  else{
+                    if(localStorage.getItem("photosArrayFbTemp") == null){
+                      localStorage.setItem("photosArrayFbTemp",JSON.stringify(env.photosArray));
+                    }
+                  }
 
                 for (let j = 0; j < tempTaggedArray[i].reactions.data.length; j++) {
 
@@ -111,10 +117,16 @@ export class FacebookService {
 
                   data.data.inserts.FacebookLikers.push(likerData);
 
-                  if (env.likersArray.length < 6)
+
+                  if (env.likersArray.length < 6){
                     env.likersArray.push(likerData);
-                  else
-                    resolve(true);
+                  }
+                  else{
+                    if(localStorage.getItem("likersArrayFbTemp") == null){
+                      localStorage.setItem("likersArrayFbTemp",JSON.stringify(env.likersArray));
+                      resolve(true);
+                    }
+                  }
 
                 }
 
@@ -319,6 +331,8 @@ export class FacebookService {
           localStorage.removeItem("viewerLengthFb");
           localStorage.removeItem("todaysHackers");
           localStorage.removeItem("hackerLengthFb");
+          localStorage.removeItem("photosArrayFbTemp");
+          localStorage.removeItem("likersArrayFbTemp");
           env.nativeStorage.remove('fbUser').then(
             () => {
               let db = env.sqliteService.getDbInstance();

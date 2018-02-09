@@ -95,8 +95,14 @@ export class InstagramService {
                       };
                     data.data.inserts.InstagramLikers.push(likerData);
 
-                    if (env.likersArray.length < 6)
-                    env.likersArray.push(likerData);
+                    if (env.likersArray.length < 6){
+                      env.likersArray.push(likerData);
+                    }
+                    else{
+                      if(localStorage.getItem("likersArrayInTemp") == null){
+                        localStorage.setItem("likersArrayInTemp",JSON.stringify(env.likersArray));
+                      }
+                    }
                     
                   }
 
@@ -138,7 +144,10 @@ export class InstagramService {
                   env.photosArray.push(photoData);
                 }
                 else{
-                  resolve(true);
+                  if(localStorage.getItem("photosArrayInTemp") == null){
+                    localStorage.setItem("photosArrayInTemp",JSON.stringify(env.photosArray));
+                    resolve(true);
+                  }
                 }
 
               }
@@ -303,6 +312,8 @@ export class InstagramService {
       localStorage.removeItem("todaysViewersIn");
       localStorage.removeItem("viewerLengthIn");
       localStorage.removeItem("todays_date_in");
+      localStorage.removeItem("photosArrayInTemp");
+      localStorage.removeItem("likersArrayInTemp");
     env.nativeStorage.remove("inToken").then(
       () => {
         let db = env.sqliteService.getDbInstance();
