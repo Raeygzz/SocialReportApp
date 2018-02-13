@@ -48,6 +48,10 @@ export class InAppPurchasePage {
   buyProducts() {
     let env = this;
     this.iap
+    .getProducts(['prod1_sub_final'])
+    .then((products) => {
+      // alert(JSON.stringify(products));
+      env.iap
       .buy('prod1_sub_final')
       .then(data => {
         // alert(JSON.stringify(data));
@@ -69,6 +73,33 @@ export class InAppPurchasePage {
           );
         }
       })
+    })
+    .catch((err) => {
+
+      env.iap
+      .buy('prod1_sub_final')
+      .then(data => {
+        // alert(JSON.stringify(data));
+        this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+          console.log('product was successfully consumed!')
+        }).catch(() => {
+
+        })
+      }).catch((err) => {
+        // alert(JSON.stringify(err));
+        if (err.code == '-6' || err.code == '-9') {
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+        }
+      })
+
+    });
   }
 
 }
