@@ -61,6 +61,14 @@ export class ProfilePage {
     toast.present();
   }
 
+  errorToast(error) {
+    let toast = this
+      .toastCtrl
+      .create({message: error, duration: 3000, position: 'bottom'});
+
+    toast.present();
+  }
+
   ionViewWillEnter() {
     let vm = this;
 
@@ -492,10 +500,14 @@ export class ProfilePage {
                       dates: []
                     });
                 }
+              }).catch(() => {
+                this.errorToast("Please try again later!");
               });
 
           })
-          .catch(e => {});
+          .catch(e => {
+            this.errorToast("Please try again later!");
+          });
       }, error => {
         this.presentModal(InAppPurchaseInCrushPage);
       });
@@ -675,10 +687,14 @@ export class ProfilePage {
                   dates: []
                 });
             }
+          }).catch(() => {
+            this.errorToast("Please try again later!");
           });
 
       })
-      .catch(e => {});
+      .catch(e => {
+        this.errorToast("Please try again later!");
+      });
   }
 
   instagramViewers() {
@@ -914,10 +930,12 @@ export class ProfilePage {
               })
               .catch(e => {
                 loader.dismiss();
+                this.errorToast("Please try again later!");
               });
           })
           .catch(() => {
             loader.dismiss();
+            this.errorToast("Please try again later!");
           });
       }, error => {
         this.presentModal(InAppPurchaseInPhotosPage);
@@ -959,10 +977,13 @@ export class ProfilePage {
                   .navCtrl
                   .push(YourLikersPage, {likers: dataArray});
               })
-              .catch(e => {});
+              .catch(e => {
+                this.errorToast("Please try again later!");
+              });
           })
           .catch(() => {
             loader.dismiss();
+            this.errorToast("Please try again later!");
           });
       }, error => {
         this.presentModal(InAppPurchaseInLikersPage);

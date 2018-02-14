@@ -322,6 +322,14 @@ export class FacebookProfilePage {
     toast.present();
   }
 
+  errorToast(error) {
+    let toast = this
+      .toastCtrl
+      .create({message: error, duration: 3000, position: 'bottom'});
+
+    toast.present();
+  }
+
   apiCall() {
     let env = this;
     let db = env
@@ -380,16 +388,19 @@ export class FacebookProfilePage {
               })
               .catch(e => {
                 loader.dismiss();
+                this.errorToast("Please try again later!");
               });
           })
           .catch(() => {
             loader.dismiss();
+            this.errorToast("Please try again later!");
           });
       }, error => {
         this.presentModal(InAppPurchaseFbPhotosPage);
       })
       .catch(() => {
         loader.dismiss();
+        this.errorToast("Please try again later!");
       });
 
   }
@@ -413,6 +424,7 @@ export class FacebookProfilePage {
           env.urlPhoto = obj.source;
         } else {
           env.urlPhoto = env.placeHolder;
+          this.errorToast("Please try again later!");
         }
       })
       .catch(e => {
@@ -457,10 +469,12 @@ export class FacebookProfilePage {
               })
               .catch(e => {
                 loader.dismiss();
+                this.errorToast("Please try again later!");
               });
           })
           .catch(() => {
             loader.dismiss();
+            this.errorToast("Please try again later!");
           });
       }, error => {
         this.presentModal(InAppPurchaseFbLikersPage);
@@ -529,10 +543,12 @@ export class FacebookProfilePage {
               })
               .catch(e => {
                 loader.dismiss();
+                this.errorToast("Please try again later!");
               });
           })
           .catch(() => {
             loader.dismiss();
+            this.errorToast("Please try again later!");
           });
       }, error => {
         this.presentModal(InAppPurchaseFbLovePage);
@@ -601,10 +617,12 @@ export class FacebookProfilePage {
               })
               .catch(e => {
                 loader.dismiss();
+                this.errorToast("Please try again later!");
               });
           })
           .catch(() => {
             loader.dismiss();
+            this.errorToast("Please try again later!");
           });
       }, error => {
         this.presentModal(InAppPurchaseFbLaughPage);
@@ -748,10 +766,22 @@ export class FacebookProfilePage {
                   dates: dates
                 });
             }
+            else{
+              this
+              .navCtrl
+              .push(WhoViewedProfileFbPage, {
+                likers: dataArray,
+                dates: []
+              });
+            }
+          }).catch(() => {
+            this.errorToast("Please try again later.");
           });
 
       })
-      .catch(e => {});
+      .catch(e => {
+        this.errorToast("Please try again later!");
+      });
   }
 
   facebookViewers() {
@@ -814,7 +844,9 @@ export class FacebookProfilePage {
           }
 
         })
-        .catch(e => {});
+        .catch(e => {
+          this.errorToast("Please try again later!");
+        });
     }
 
   }
@@ -948,10 +980,14 @@ export class FacebookProfilePage {
                       dates: []
                     });
                 }
+              }).catch(() => {
+                this.errorToast("Please try again later!");
               });
 
           })
-          .catch(e => {});
+          .catch(e => {
+            this.errorToast("Please try again later!");
+          });
       }, error => {
         this.presentModal(InAppPurchaseFbCrushPage);
       });
