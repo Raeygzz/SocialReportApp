@@ -34,24 +34,24 @@ export class FacebookProfilePage {
   fnName : String = "mostLiked";
   name : String = null;
   url : String = './assets/imgs/no-image.jpeg';
-  urlPhoto : String = JSON.parse(localStorage.getItem("photosArrayFbTemp")).length > 0
+  urlPhoto : String = localStorage.getItem("photosArrayFbTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayFbTemp")).length > 0
     ? JSON.parse(localStorage.getItem("photosArrayFbTemp"))[0].source
-    : './assets/imgs/no-image.jpeg';
-  urlViewer : String = JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 3
+    : './assets/imgs/no-image.jpeg'):'./assets/imgs/no-image.jpeg' ;
+  urlViewer : String = localStorage.getItem("likersArrayFbTemp") != null ? (JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 3
     ? JSON.parse(localStorage.getItem("likersArrayFbTemp"))[3].picture
-    : './assets/imgs/no-image.jpeg';
-  urlLiker : String = JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 0
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+  urlLiker : String = localStorage.getItem("likersArrayFbTemp") != null ? (JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 0
     ? JSON.parse(localStorage.getItem("likersArrayFbTemp"))[0].picture
-    : './assets/imgs/no-image.jpeg';
-  urlLove : String = JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 1
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+  urlLove : String = localStorage.getItem("likersArrayFbTemp") != null ? (JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 1
     ? JSON.parse(localStorage.getItem("likersArrayFbTemp"))[1].picture
-    : './assets/imgs/no-image.jpeg';
-  urlLaugh : String = JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 2
+    : './assets/imgs/no-image.jpeg') : './assets/imgs/no-image.jpeg';
+  urlLaugh : String = localStorage.getItem("likersArrayFbTemp") != null ? (JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 2
     ? JSON.parse(localStorage.getItem("likersArrayFbTemp"))[2].picture
-    : './assets/imgs/no-image.jpeg';
-  urlHacker : String = JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 4
+    : './assets/imgs/no-image.jpeg') : './assets/imgs/no-image.jpeg';
+  urlHacker : String = localStorage.getItem("likersArrayFbTemp") != null ? (JSON.parse(localStorage.getItem("likersArrayFbTemp")).length > 4
     ? JSON.parse(localStorage.getItem("likersArrayFbTemp"))[4].picture
-    : './assets/imgs/no-image.jpeg';
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
     
   whoViewedYourProfileFbCount : number = 0;
   whoViewedYourProfileFbBadge : boolean = true;

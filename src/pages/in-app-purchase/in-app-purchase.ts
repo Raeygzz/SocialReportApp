@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { LoadingController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -15,6 +16,7 @@ export class InAppPurchasePage {
     public navParams: NavParams,
     private iap: InAppPurchase,
     private nativeStorage: NativeStorage,
+    public loading : LoadingController
   ) {
 
   }
@@ -46,14 +48,23 @@ export class InAppPurchasePage {
   }
 
   buyProducts() {
+    let loader = this
+    .loading
+    .create({content: 'Loading..'});
+
+    loader
+    .present()
+    .then(() => {
     let env = this;
     this.iap
     .getProducts(['prod1_sub_final'])
     .then((products) => {
       // alert(JSON.stringify(products));
+      loader.dismiss();
       env.iap
       .buy('prod1_sub_final')
       .then(data => {
+        loader.dismiss();
         // alert(JSON.stringify(data));
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
@@ -62,10 +73,11 @@ export class InAppPurchasePage {
           );
           console.log('product was successfully consumed!')
         }).catch(() => {
-
+          loader.dismiss();
         })
       }).catch((err) => {
         // alert(JSON.stringify(err));
+        loader.dismiss();
         if (err.code == '-6' || err.code == '-9') {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
@@ -75,22 +87,30 @@ export class InAppPurchasePage {
       })
     })
     .catch((err) => {
-
+      loader.dismiss();
       env.iap
       .buy('prod1_sub_final')
       .then(data => {
         // alert(JSON.stringify(data));
+        loader.dismiss();
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
             () => env.navCtrl.pop(),
-          );
+          ).catch(() => {
+            loader.dismiss();
+          });
           console.log('product was successfully consumed!')
         }).catch(() => {
-
+          loader.dismiss();
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
         })
       }).catch((err) => {
         // alert(JSON.stringify(err));
+        loader.dismiss();
         if (err.code == '-6' || err.code == '-9') {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
@@ -100,6 +120,9 @@ export class InAppPurchasePage {
       })
 
     });
+  }).catch(() => {
+    loader.dismiss();
+  })
   }
 
 }

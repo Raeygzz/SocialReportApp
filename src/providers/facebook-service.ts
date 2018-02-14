@@ -94,7 +94,7 @@ export class FacebookService {
 
                 data.data.inserts.FacebookPhotos.push(photoData);
 
-                  if (env.photosArray.length < 6){
+                  if (env.photosArray.length < 6 && env.photosArray.length < tempTaggedArray.length){
                     env.photosArray.push(photoData);
                   }
                   else{
@@ -118,8 +118,11 @@ export class FacebookService {
                   data.data.inserts.FacebookLikers.push(likerData);
 
 
-                  if (env.likersArray.length < 6){
+                  if (env.likersArray.length < 6 && env.likersArray.length < tempTaggedArray[i].reactions.data){
                     env.likersArray.push(likerData);
+                    if(env.likersArray.length == tempTaggedArray[i].reactions.data){
+                      resolve(true);
+                    }
                   }
                   else{
                     if(localStorage.getItem("likersArrayFbTemp") == null){

@@ -95,7 +95,7 @@ export class InstagramService {
                       };
                     data.data.inserts.InstagramLikers.push(likerData);
 
-                    if (env.likersArray.length < 6){
+                    if (env.likersArray.length < 6 && env.likersArray.length < temp.length){
                       env.likersArray.push(likerData);
                     }
                     else{
@@ -140,8 +140,11 @@ export class InstagramService {
                 };
                 data.data.inserts.InstagramPhotos.push(photoData);
 
-                if (env.photosArray.length < 6){
+                if (env.photosArray.length < 6  && env.photosArray.length < mediaArray.length){
                   env.photosArray.push(photoData);
+                  if(env.photosArray.length == mediaArray.length){
+                    resolve(true);
+                  }
                 }
                 else{
                   if(localStorage.getItem("photosArrayInTemp") == null){
@@ -157,7 +160,7 @@ export class InstagramService {
               }
               media(mediaIdArray, 0);
             }).catch(()=>{
-
+              reject(true);
             });
         },
         error => {

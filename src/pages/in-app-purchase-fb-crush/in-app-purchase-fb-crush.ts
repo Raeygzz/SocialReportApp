@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { LoadingController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -14,7 +15,8 @@ export class InAppPurchaseFbCrushPage {
     public navCtrl: NavController, 
     public navParams: NavParams, 
     private iap: InAppPurchase, 
-    private nativeStorage: NativeStorage
+    private nativeStorage: NativeStorage,
+    public loading : LoadingController
   ) {
   }
 
@@ -48,14 +50,21 @@ export class InAppPurchaseFbCrushPage {
   
   buyProducts(){
     let env = this;
+    let loader = this
+    .loading
+    .create({content: 'Loading..'});
+    loader
+    .present()
+    .then(() => {
     this.iap
     .getProducts(['prod_fb_crush_sub_final'])
     .then((products) => {
       // alert(JSON.stringify(products));
-
+      loader.dismiss();
       env.iap
       .buy('prod_fb_crush_sub_final')
       .then(data => {
+        loader.dismiss();
         // alert(JSON.stringify(data));
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('prod_fb_crush', "True")
@@ -67,6 +76,7 @@ export class InAppPurchaseFbCrushPage {
     
         })
       }).catch((err) => {
+        loader.dismiss();
         // alert(JSON.stringify(err));
         if(err.code == '-6' || err.code == '-9'){
           env.nativeStorage.setItem('prod_fb_crush', "True")
@@ -78,9 +88,11 @@ export class InAppPurchaseFbCrushPage {
     })
     .catch((err) => {
         // alert(JSON.stringify(err));
+        loader.dismiss();
         env.iap
         .buy('prod_fb_crush_sub_final')
         .then(data => {
+          loader.dismiss();
           // alert(JSON.stringify(data));
           this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
             env.nativeStorage.setItem('prod_fb_crush', "True")
@@ -89,9 +101,14 @@ export class InAppPurchaseFbCrushPage {
             );
             console.log('product was successfully consumed!')
           }).catch(() => {
-      
+            loader.dismiss();
+            env.nativeStorage.setItem('prod_fb_crush', "True")
+            .then(
+              () => env.navCtrl.pop(),
+            );
           })
         }).catch((err) => {
+          loader.dismiss();
           // alert(JSON.stringify(err));
           if(err.code == '-6' || err.code == '-9'){
             env.nativeStorage.setItem('prod_fb_crush', "True")
@@ -100,6 +117,10 @@ export class InAppPurchaseFbCrushPage {
             );
           }
         })
+    });
+
+  }).catch(() => {
+    loader.dismiss();
     });
 
 

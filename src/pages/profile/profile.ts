@@ -27,19 +27,19 @@ export class ProfilePage {
   loader : any;
   name : string = null;
   url : String = './assets/imgs/no-image.jpeg';
-  urlPhoto : String = JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 0
+  urlPhoto : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 0
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[0].source
-    : './assets/imgs/no-image.jpeg';
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
     // temp: String = JSON.parse(localStorage.getItem("photosArrayInTemp"))[0].source;
-  urlViewer : String = JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 1
+  urlViewer : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 1
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[1].source
-    : './assets/imgs/no-image.jpeg';
-  urlLiker : String = JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 2
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+  urlLiker : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 2
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[2].source
-    : './assets/imgs/no-image.jpeg';
-  urlHacker : String = JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 3
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+  urlHacker : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 3
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[3].source
-    : './assets/imgs/no-image.jpeg';
+    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
 
   youLikeMostCount : number = 0;
   youLikeMostBadge : boolean = true;
