@@ -32,6 +32,7 @@ export class InstagramHomePage {
   inToken: any;
   isLoggedIn: boolean = false;
   pageReady: boolean = false;
+  buttonDisable: boolean = true;
 
   constructor(
     public navCtrl: NavController,
@@ -70,6 +71,7 @@ export class InstagramHomePage {
       }).catch((ex) => {
         loader.dismiss();
         this.pageReady = true;
+        this.buttonDisable = false;
       });
   }
 

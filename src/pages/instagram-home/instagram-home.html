@@ -12,7 +12,7 @@
       ¡Descubre quien te ve secretamente tu perfil en Instagram!
     </h3>
 
-    <button *ngIf="!isLoggedIn" ion-button color="light" style="text-transform: none;" (click)="instagramLogin()" full>Iniciar sesión en Instagram</button>
+    <button *ngIf="!isLoggedIn" ion-button color="light" style="text-transform: none;" [disabled]="buttonDisable" (click)="instagramLogin()" full>Iniciar sesión en Instagram</button>
     <button *ngIf="isLoggedIn" ion-button color="light" style="text-transform: none;" (click)="instagramReports()" full>Informes abiertos de Instagram</button>
   </div>
 </ion-content>
