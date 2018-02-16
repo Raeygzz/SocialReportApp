@@ -29,17 +29,17 @@ export class ProfilePage {
   url : String = './assets/imgs/no-image.jpeg';
   urlPhoto : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 0
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[0].source
-    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+    : './assets/imgs/7.jpeg'): './assets/imgs/7.jpeg';
     // temp: String = JSON.parse(localStorage.getItem("photosArrayInTemp"))[0].source;
   urlViewer : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 1
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[1].source
-    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+    : './assets/imgs/8.jpeg'): './assets/imgs/8.jpeg';
   urlLiker : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 2
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[2].source
-    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+    : './assets/imgs/9.jpeg'): './assets/imgs/9.jpeg';
   urlHacker : String = localStorage.getItem("photosArrayInTemp") != null ? (JSON.parse(localStorage.getItem("photosArrayInTemp")).length > 3
     ? JSON.parse(localStorage.getItem("photosArrayInTemp"))[3].source
-    : './assets/imgs/no-image.jpeg'): './assets/imgs/no-image.jpeg';
+    : './assets/imgs/10.jpeg'): './assets/imgs/10.jpeg';
 
   youLikeMostCount : number = 0;
   youLikeMostBadge : boolean = true;
@@ -50,6 +50,10 @@ export class ProfilePage {
   whoHackedYourProfileFbCount : number = 0;
   whoHackedYourProfileFbBadge : boolean = true;
   placeHolder : String = "./assets/imgs/no-image.jpeg";
+  placeHolder7 : String = "./assets/imgs/7.jpeg";
+  placeHolder8 : String = "./assets/imgs/8.jpeg";
+  placeHolder9 : String = "./assets/imgs/9.jpeg";
+  placeHolder10 : String = "./assets/imgs/10.jpeg";
 
   constructor(public navCtrl : NavController, public UserService : UserService, public loading : LoadingController, private nativeStorage : NativeStorage, public actionSheetCtrl : ActionSheetController, public modalCtrl : ModalController, public toastCtrl : ToastController, private instagramService : InstagramService, public sqliteService : SqliteService, public localNotifications : LocalNotifications, public localNotifications2 : LocalNotifications) {}
 
@@ -140,11 +144,11 @@ export class ProfilePage {
             .item(0);
           env.urlHacker = obj.picture;
         } else {
-          env.urlHacker = env.placeHolder;
+          env.urlHacker = env.placeHolder10;
         }
       })
       .catch((e) => {
-        env.urlHacker = env.placeHolder;
+        env.urlHacker = env.placeHolder10;
       })
   }
 
@@ -165,11 +169,11 @@ export class ProfilePage {
             .item(0);
           env.urlLiker = obj.picture;
         } else {
-          env.urlLiker = env.placeHolder;
+          env.urlLiker = env.placeHolder9;
         }
       })
       .catch((e) => {
-        env.urlLiker = env.placeHolder;
+        env.urlLiker = env.placeHolder9;
       })
   }
 
@@ -191,11 +195,11 @@ export class ProfilePage {
             .item(0);
           env.urlPhoto = obj.source;
         } else {
-          env.urlPhoto = env.placeHolder;
+          env.urlPhoto = env.placeHolder7;
         }
       })
       .catch(e => {
-        env.urlPhoto = env.placeHolder;
+        env.urlPhoto = env.placeHolder7;
       });
   }
 
@@ -214,11 +218,11 @@ export class ProfilePage {
             .item(0);
           env.urlViewer = obj.picture;
         } else {
-          env.urlViewer = env.placeHolder;
+          env.urlViewer = env.placeHolder8;
         }
       })
       .catch((e) => {
-        env.urlViewer = env.placeHolder;
+        env.urlViewer = env.placeHolder8;
       })
   }
 
@@ -402,7 +406,7 @@ export class ProfilePage {
         this.likesYouMostCount = data.rows.length;
         if (this.likesYouMostCount > 0) {
           this.likesYouMostBadge = true;
-          if (this.urlLiker == this.placeHolder) 
+          if (this.urlLiker == this.placeHolder9) 
             this.dbLikerUrl();
           }
         else 
@@ -422,7 +426,7 @@ export class ProfilePage {
         this.whoViewedYourProfileCount = data.rows.length;
         if (this.whoViewedYourProfileCount > 0) {
           this.whoViewedYourProfileBadge = true;
-          if (this.urlViewer == this.placeHolder) 
+          if (this.urlViewer == this.placeHolder8) 
             this.dbViewerUrl();
           }
         else 
@@ -442,7 +446,7 @@ export class ProfilePage {
         this.whoHackedYourProfileFbCount = data.rows.length;
         if (this.whoHackedYourProfileFbCount > 0) {
           this.whoHackedYourProfileFbBadge = true;
-          if (this.urlHacker == this.placeHolder) 
+          if (this.urlHacker == this.placeHolder10) 
             this.dbHackerUrl();
           }
         else {

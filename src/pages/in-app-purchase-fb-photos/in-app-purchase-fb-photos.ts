@@ -65,7 +65,7 @@ export class InAppPurchaseFbPhotosPage {
     .buy('prod_fb_photos_sub_final')
     .then(data => {
       loader.dismiss();
-      // alert(JSON.stringify(data));
+      alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_photos', "True")
           .then(
@@ -74,11 +74,23 @@ export class InAppPurchaseFbPhotosPage {
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        env.nativeStorage.setItem('prod_fb_photos', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
       })
     }).catch((err) => {
       loader.dismiss();
       // alert(JSON.stringify(err));
       if (err.code == '-6' || err.code == '-9') {
+        alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+        env.nativeStorage.setItem('prod_fb_photos', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+      }
+      if (err.code == '-9') {
+        alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
         env.nativeStorage.setItem('prod_fb_photos', "True")
           .then(
           () => env.navCtrl.pop(),
@@ -93,7 +105,7 @@ export class InAppPurchaseFbPhotosPage {
     .buy('prod_fb_photos_sub_final')
     .then(data => {
       loader.dismiss();
-      // alert(JSON.stringify(data));
+      alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_photos', "True")
           .then(
@@ -111,6 +123,14 @@ export class InAppPurchaseFbPhotosPage {
       loader.dismiss();
       // alert(JSON.stringify(err));
       if (err.code == '-6' || err.code == '-9') {
+        alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+        env.nativeStorage.setItem('prod_fb_photos', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+      }
+      if (err.code == '-9') {
+        alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
         env.nativeStorage.setItem('prod_fb_photos', "True")
           .then(
           () => env.navCtrl.pop(),

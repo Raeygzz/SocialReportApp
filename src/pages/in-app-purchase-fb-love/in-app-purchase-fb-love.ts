@@ -65,35 +65,7 @@ export class InAppPurchaseFbLovePage {
         .buy('prod_fb_lovers_sub_final')
         .then(data => {
           loader.dismiss();
-          // alert(JSON.stringify(data));
-          this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
-            env.nativeStorage.setItem('prod_fb_lovers', "True")
-              .then(
-              () => env.navCtrl.pop(),
-            );
-            console.log('product was successfully consumed!')
-          }).catch(() => {
-            loader.dismiss();
-          })
-        }).catch((err) => {
-          loader.dismiss();
-          // alert(JSON.stringify(err));
-          if (err.code == '-6' || err.code == '-9') {
-            env.nativeStorage.setItem('prod_fb_lovers', "True")
-              .then(
-              () => env.navCtrl.pop(),
-            );
-          }
-        })
-      })
-      .catch((err) => {
-        // alert(JSON.stringify(err));
-        loader.dismiss();
-        env.iap
-        .buy('prod_fb_lovers_sub_final')
-        .then(data => {
-          loader.dismiss();
-          // alert(JSON.stringify(data));
+          alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
           this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
             env.nativeStorage.setItem('prod_fb_lovers', "True")
               .then(
@@ -110,7 +82,56 @@ export class InAppPurchaseFbLovePage {
         }).catch((err) => {
           loader.dismiss();
           // alert(JSON.stringify(err));
-          if (err.code == '-6' || err.code == '-9') {
+          if (err.code == '-6') {
+            alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+              .then(
+              () => env.navCtrl.pop(),
+            );
+          }
+          if (err.code == '-9') {
+            alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+              .then(
+              () => env.navCtrl.pop(),
+            );
+          }
+        })
+      })
+      .catch((err) => {
+        // alert(JSON.stringify(err));
+        loader.dismiss();
+        env.iap
+        .buy('prod_fb_lovers_sub_final')
+        .then(data => {
+          loader.dismiss();
+          // alert(JSON.stringify(data));
+          alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+          this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+              .then(
+              () => env.navCtrl.pop(),
+            );
+            console.log('product was successfully consumed!')
+          }).catch(() => {
+            loader.dismiss();
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+          })
+        }).catch((err) => {
+          loader.dismiss();
+          // alert(JSON.stringify(err));
+          if (err.code == '-6') {
+            alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+            env.nativeStorage.setItem('prod_fb_lovers', "True")
+              .then(
+              () => env.navCtrl.pop(),
+            );
+          }
+          if (err.code == '-9') {
+            alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
             env.nativeStorage.setItem('prod_fb_lovers', "True")
               .then(
               () => env.navCtrl.pop(),

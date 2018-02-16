@@ -65,7 +65,7 @@ export class InAppPurchasePage {
       .buy('prod1_sub_final')
       .then(data => {
         loader.dismiss();
-        // alert(JSON.stringify(data));
+        alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
@@ -74,11 +74,24 @@ export class InAppPurchasePage {
           console.log('product was successfully consumed!')
         }).catch(() => {
           loader.dismiss();
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
         })
       }).catch((err) => {
         // alert(JSON.stringify(err));
         loader.dismiss();
-        if (err.code == '-6' || err.code == '-9') {
+        if (err.code == '-6') {
+          alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+        }
+
+        if(err.code == '-9'){
+          alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
             () => env.navCtrl.pop(),
@@ -93,6 +106,7 @@ export class InAppPurchasePage {
       .then(data => {
         // alert(JSON.stringify(data));
         loader.dismiss();
+        alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
@@ -111,12 +125,22 @@ export class InAppPurchasePage {
       }).catch((err) => {
         // alert(JSON.stringify(err));
         loader.dismiss();
-        if (err.code == '-6' || err.code == '-9') {
+        if (err.code == '-6') {
+          alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
             .then(
             () => env.navCtrl.pop(),
           );
         }
+
+        if(err.code == '-9'){
+          alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
+          env.nativeStorage.setItem('whoViewedFbProfile', "True")
+            .then(
+            () => env.navCtrl.pop(),
+          );
+        }
+
       })
 
     });

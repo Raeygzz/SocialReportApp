@@ -63,7 +63,7 @@ export class InAppPurchaseFbLaughPage {
     .buy('prod_fb_laugh_sub_final')
     .then(data => {
       loader.dismiss();
-      // alert("data "+JSON.stringify(data));
+      alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       env.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_laugh', "True")
           .then(
@@ -72,11 +72,23 @@ export class InAppPurchaseFbLaughPage {
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        env.nativeStorage.setItem('prod_fb_laugh', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
       })
     }).catch((err) => {
       loader.dismiss();
       // alert("err "+JSON.stringify(err));
       if (err.code == '-6') {
+        alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+        env.nativeStorage.setItem('prod_fb_laugh', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+      }
+      if (err.code == '-9') {
+        alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
         env.nativeStorage.setItem('prod_fb_laugh', "True")
           .then(
           () => env.navCtrl.pop(),
@@ -91,6 +103,7 @@ export class InAppPurchaseFbLaughPage {
     .then(data => {
       loader.dismiss();
       // alert("data "+JSON.stringify(data));
+      alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       env.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_laugh', "True")
           .then(
@@ -108,6 +121,14 @@ export class InAppPurchaseFbLaughPage {
       loader.dismiss();
       // alert("err "+JSON.stringify(err));
       if (err.code == '-6') {
+        alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
+        env.nativeStorage.setItem('prod_fb_laugh', "True")
+          .then(
+          () => env.navCtrl.pop(),
+        );
+      }
+      if (err.code == '-9') {
+        alert('Ya tienes acceso a este reporte. Ingresa desde la pagina principal');
         env.nativeStorage.setItem('prod_fb_laugh', "True")
           .then(
           () => env.navCtrl.pop(),
