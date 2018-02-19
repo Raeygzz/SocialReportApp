@@ -60,6 +60,8 @@ export class FacebookService {
             // env.fb.api("/" + env.id + "/photos/?fields=picture%2Clikes.limit(999)%7Bpic_small%2Cname%7D&limit=999&type=tagged", params).then((userTaggedPhotos) => {
             env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=tagged", params).then((userTaggedPhotos) => {
 
+              resolve(true);
+
               console.log("Tagged.. Fb", userTaggedPhotos);
               let getDataTaggedArray = userTaggedPhotos.data;
 
@@ -120,9 +122,9 @@ export class FacebookService {
 
                   if (env.likersArray.length < 6 && env.likersArray.length < tempTaggedArray[i].reactions.data){
                     env.likersArray.push(likerData);
-                    if(env.likersArray.length == tempTaggedArray[i].reactions.data){
-                      resolve(true);
-                    }
+                    // if(env.likersArray.length == tempTaggedArray[i].reactions.data){
+                      
+                    // }
                   }
                   else{
                     if(localStorage.getItem("likersArrayFbTemp") == null){

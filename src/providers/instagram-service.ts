@@ -81,6 +81,7 @@ export class InstagramService {
 
 
               let media = function (mediaIdArray, i) {
+                resolve(true);
                 mediaByID(mediaIdArray[i]).then(function (dataMedia) {
                   let temp = (dataMedia as any).data;
                   let image_id = (dataMedia as any).media_id;
@@ -142,9 +143,9 @@ export class InstagramService {
 
                 if (env.photosArray.length < 6  && env.photosArray.length < mediaArray.length){
                   env.photosArray.push(photoData);
-                  if(env.photosArray.length == mediaArray.length){
-                    resolve(true);
-                  }
+                  // if(env.photosArray.length == mediaArray.length){
+                    
+                  // }
                 }
                 else{
                   if(localStorage.getItem("photosArrayInTemp") == null){
