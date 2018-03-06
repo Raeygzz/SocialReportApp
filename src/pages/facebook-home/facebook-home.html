@@ -17,7 +17,7 @@
     <br>
     <br>
     <button *ngIf="!isFbLoggedIn" style="text-transform: none;font-size:1em" primary ion-button icon-right (click)="facebookLogin()"
-      block>Iniciar sesión con la aplicación de Facebook
+      block>Iniciar sesión
       <ion-icon name="ios-arrow-forward"></ion-icon>
     </button>
     <button *ngIf="isFbLoggedIn" style="text-transform: none;font-size:1em" primary ion-button (click)="facebookReports()" block>
@@ -26,17 +26,17 @@
     <br>
     <br>
     <br>
-    <div style="width: 100%; height: 14px; border-bottom: 1px solid grey; text-align: center" *ngIf="!isFbLoggedIn">
-      <span style="font-size: 20px;padding: 0 10px;color:grey" class="facebookHome">
-        or
+    <!--div style="width: 100%; height: 14px; border-bottom: 1px solid grey; text-align: center" *ngIf="!isFbLoggedIn">
+      <span style="font-size: 20px;padding: 0 10px;color:grey" class="facebookHome"-->
+        <!--or-->
         <!--Padding is optional-->
-      </span>
+      <!--/span>
     </div>
     <br>
     <br>
-    <br>
-    <button *ngIf="!isFbLoggedIn" style="text-transform: none;background-color:#3B5998;font-size:1em" ion-button icon-right (click)="facebookLogin()"
-      block>Iniciar sesión con el teléfono o el correo electrónico</button>
+    <br-->
+    <!--button *ngIf="!isFbLoggedIn" style="text-transform: none;background-color:#3B5998;font-size:1em" ion-button icon-right (click)="facebookLogin()"
+      block>Iniciar sesión con el teléfono o el correo electrónico</button-->
     <br>
     <div style="text-align:center">
       <p style="color:rgb(60, 84, 133);text-decoration:none" (click)="inAppBrowserOpen(1)">Crear cuenta</p>
