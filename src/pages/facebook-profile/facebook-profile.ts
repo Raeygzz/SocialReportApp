@@ -1193,16 +1193,16 @@ export class FacebookProfilePage {
     let actionSheet = this
       .actionSheetCtrl
       .create({
-        title: 'Settings',
+        title: 'Ajustes',
         buttons: [
           {
-            text: 'Logout',
+            text: 'Cerras Sesión',
             role: 'destructive',
             handler: () => {
               this.doFbLogout();
             }
           }, {
-            text: 'Cancel',
+            text: 'Cancelar',
             role: 'cancel',
             handler: () => {
               actionSheet.dismiss();

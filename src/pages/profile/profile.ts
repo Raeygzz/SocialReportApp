@@ -998,16 +998,16 @@ export class ProfilePage {
     let actionSheet = this
       .actionSheetCtrl
       .create({
-        title: 'Settings',
+        title: 'Ajustes',
         buttons: [
           {
-            text: 'Logout',
+            text: 'Cerras Sesión',
             role: 'destructive',
             handler: () => {
               this.logout();
             }
           }, {
-            text: 'Cancel',
+            text: 'Cancelar',
             role: 'cancel',
             handler: () => {
               actionSheet.dismiss();
