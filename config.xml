@@ -78,6 +78,7 @@
     </platform>
     <allow-navigation href="http://192.168.1.123:8100" />
     <allow-navigation href="http://192.168.1.101:8100" />
+    <preference name="SplashScreenDelay" value="3000" />
     <engine name="browser" spec="~5.0.1" />
     <engine name="android" spec="6.3.0" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
@@ -97,4 +98,5 @@
     <plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" spec="^1.0.2" />
     <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.1" />
     <plugin name="cordova-plugin-background-mode" spec="^0.7.2" />
+    <plugin name="cordova-plugin-appsflyer" spec="^4.2.17" />
 </widget>

@@ -38,6 +38,7 @@
     "cordova-android": "6.3.0",
     "cordova-browser": "~5.0.1",
     "cordova-device-accounts": "^1.0.0",
+    "cordova-plugin-appsflyer": "^4.2.17",
     "cordova-plugin-background-mode": "^0.7.2",
     "cordova-plugin-badge": "^0.8.6",
     "cordova-plugin-device": "^1.1.7",
@@ -83,7 +84,8 @@
       "cordova-sqlite-storage": {},
       "uk.co.workingedge.cordova.plugin.sqliteporter": {},
       "cordova-plugin-local-notification": {},
-      "cordova-plugin-background-mode": {}
+      "cordova-plugin-background-mode": {},
+      "cordova-plugin-appsflyer": {}
     },
     "platforms": [
       "browser",
