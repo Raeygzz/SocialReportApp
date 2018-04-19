@@ -158,3 +158,6 @@ export class MyApp {
 
   }
 }
+
+
+export default window;

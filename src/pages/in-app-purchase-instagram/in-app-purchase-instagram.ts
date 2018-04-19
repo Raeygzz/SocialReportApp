@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { LoadingController } from 'ionic-angular';
+import window from '../../app/app.component';
 
 @IonicPage()
 @Component({
@@ -10,6 +11,9 @@ import { LoadingController } from 'ionic-angular';
   templateUrl: 'in-app-purchase-instagram.html',
 })
 export class InAppPurchaseInstagramPage {
+
+  eventName:string = "whoViewedInstaProfile";
+  eventValues:any = {"whoViewedInstaProfileCurrency":"USD", "whoViewedInstaProfileRevenue": "5"};
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private iap: InAppPurchase, private nativeStorage: NativeStorage, private loading: LoadingController) {
   }
@@ -67,6 +71,7 @@ export class InAppPurchaseInstagramPage {
             .then(
             () => env.navCtrl.pop(),
           );
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           console.log('product was successfully consumed!')
         }).catch(() => {
           loader.dismiss();
@@ -107,6 +112,7 @@ export class InAppPurchaseInstagramPage {
             .then(
             () => env.navCtrl.pop(),
           );
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           console.log('product was successfully consumed!')
         }).catch(() => {
           loader.dismiss();

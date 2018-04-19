@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { InAppPurchase } from '@ionic-native/in-app-purchase';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { LoadingController } from 'ionic-angular';
+import window from '../../app/app.component';
 
 @IonicPage()
 @Component({
@@ -10,6 +11,9 @@ import { LoadingController } from 'ionic-angular';
   templateUrl: 'in-app-purchase-fb-photos.html',
 })
 export class InAppPurchaseFbPhotosPage {
+
+  eventName:string = "photosFbProfile";
+  eventValues:any = {"photosFbProfileCurrency":"USD", "photosFbProfileRevenue": "5"};
 
   constructor(
     public navCtrl: NavController, 
@@ -71,6 +75,7 @@ export class InAppPurchaseFbPhotosPage {
           .then(
           () => env.navCtrl.pop(),
         );
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
@@ -111,6 +116,7 @@ export class InAppPurchaseFbPhotosPage {
           .then(
           () => env.navCtrl.pop(),
         );
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
