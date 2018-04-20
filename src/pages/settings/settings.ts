@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 @IonicPage()
 @Component({
@@ -12,7 +13,7 @@ export class SettingsPage {
   hideSubscribedFacebook:boolean = false;
   hideSubscribedInstagram:boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage, private iab: InAppBrowser) {
     
   }
 
@@ -55,6 +56,11 @@ export class SettingsPage {
         env.hideSubscribedInstagram = false;
       }
     });
+  }
+
+  termsAndCondition(){
+    let url = 'https://www.google.com/';
+    this.iab.create(url);
   }
 
 }
