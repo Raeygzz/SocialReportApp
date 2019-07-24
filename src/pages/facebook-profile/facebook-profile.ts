@@ -53,9 +53,11 @@ export class FacebookProfilePage {
     ? JSON.parse(localStorage.getItem("likersArrayFbTemp"))[4].picture
     : './assets/imgs/6.jpeg'): './assets/imgs/6.jpeg';
     
-  whoViewedYourProfileFbCount : number = 0;
+  // whoViewedYourProfileFbCount : number = 0;
+  whoViewedYourProfileFbCount : number = 1;   //edited
   whoViewedYourProfileFbBadge : boolean = true;
-  whoHackedYourProfileFbCount : number = 0;
+  // whoHackedYourProfileFbCount : number = 0;
+  whoHackedYourProfileFbCount : number = 1;    //edited
   whoHackedYourProfileFbBadge : boolean = true;
   likesMeMostFbCount : number = 0;
   likesMeMostFbBadge : boolean = true;
@@ -74,9 +76,18 @@ export class FacebookProfilePage {
   placeHolder6 : String = "./assets/imgs/6.jpeg";
 
 
-  constructor(public navCtrl : NavController, public navParams : NavParams, public fb : Facebook, public nativeStorage : NativeStorage, public loading : LoadingController, public userService : UserService, public actionSheetCtrl : ActionSheetController, public modalCtrl : ModalController, public toastCtrl : ToastController, public facebookService : FacebookService, public sqliteService : SqliteService, public localNotifications : LocalNotifications, public localNotifications2 : LocalNotifications) {}
-
+  constructor(public navCtrl : NavController, public navParams : NavParams, public fb : Facebook, public nativeStorage : NativeStorage, public loading : LoadingController, public userService : UserService, public actionSheetCtrl : ActionSheetController, public modalCtrl : ModalController, public toastCtrl : ToastController, public facebookService : FacebookService, public sqliteService : SqliteService, public localNotifications : LocalNotifications, public localNotifications2 : LocalNotifications) {
+  }
+  
   ionViewWillEnter() {
+    
+    let loader = this.loading.create({
+      content: 'Loading..',
+      duration: 3000
+    });
+
+    loader.present().then(() => {     //edited
+
     this.badgeCounterLikers();
     this.badgeCounterPhotos();
     this.badgeCounterViewers();
@@ -84,6 +95,9 @@ export class FacebookProfilePage {
     this.badgeCounterLoveReacters();
     this.badgeCounterLaughReacters();
 
+  }).catch(()=> {
+
+  });
     var vm = this;
     this
       .nativeStorage
@@ -113,11 +127,12 @@ export class FacebookProfilePage {
 
     let notify;
     let timer = 60000;
+    // let timer = 30000;
     notify = setInterval(() => {
       this.facebookViewers();
       this.facebookHackers();
       this.notificationChecker();
-      timer += 10000;
+      timer += 10000;    
     }, timer);
   }
 
@@ -170,7 +185,7 @@ export class FacebookProfilePage {
     let hackerFunctionRandom = function (timer) {
       hacker = setInterval(() => {
         let tempArray = JSON.parse(localStorage.getItem("todaysHackers"));
-        if (tempArray.length > 0) 
+        if (tempArray.length > 0)
           tempArray.shift();
         localStorage.setItem("todaysHackers", JSON.stringify(tempArray));
         clearInterval(hacker);
@@ -286,8 +301,9 @@ export class FacebookProfilePage {
       .sqliteService
       .getDbInstance();
     db
-      .executeSql('SELECT * FROM FacebookViewers where  viewFlag=? GROUP BY name', [0])
-      .then((data) => {
+    // .executeSql('SELECT * FROM FacebookViewers where  viewFlag=? GROUP BY name', [0])
+    .executeSql('SELECT COUNT(id) as user_count FROM FacebookViewers where viewFlag=? GROUP BY name', [0])     //edited
+    .then((data) => {
         this.whoViewedYourProfileFbCount = data.rows.length;
         if (this.whoViewedYourProfileFbCount > 0) {
           this.whoViewedYourProfileFbBadge = true;
@@ -306,15 +322,17 @@ export class FacebookProfilePage {
       .sqliteService
       .getDbInstance();
     db
-      .executeSql('SELECT * FROM FacebookHackers where  viewFlag=? GROUP BY name', [0])
-      .then((data) => {
+    // .executeSql('SELECT * FROM FacebookHackers where  viewFlag=? GROUP BY name', [0])
+    .executeSql('SELECT COUNT(id) as user_count FROM FacebookHackers where viewFlag=? GROUP BY name', [0])    //edited
+    .then((data) => {
         this.whoHackedYourProfileFbCount = data.rows.length;
         if (this.whoHackedYourProfileFbCount > 0) {
           this.whoHackedYourProfileFbBadge = true;
           if (this.urlHacker == this.placeHolder6) {
             this.dbHackerUrl();
           }
-        } else 
+        } 
+        else 
           this.whoHackedYourProfileFbCount = 5;
         }
       )
@@ -369,7 +387,7 @@ export class FacebookProfilePage {
     let env = this;
     let loader = this
       .loading
-      .create({content: 'Loading..'});
+      .create({content: 'Un Momento. Generando tu reporte', duration: 3000});
     this
       .nativeStorage
       .getItem('prod_fb_photos')
@@ -388,7 +406,7 @@ export class FacebookProfilePage {
                     dataArray.push(data.rows.item(i));
                   }
                 }
-                loader.dismiss();
+                // loader.dismiss();
                 env
                   .navCtrl
                   .push(MostLikedPhotoFbPage, {mostLikedPhotosArray: dataArray});
@@ -443,13 +461,15 @@ export class FacebookProfilePage {
       this.presentToast();
       return;
     }
+
     let db = this
       .sqliteService
       .getDbInstance();
     let env = this;
+    
     let loader = this
       .loading
-      .create({content: 'Loading..'});
+      .create({content: 'Un Momento. Generando tu reporte', duration: 3000});
     this
       .nativeStorage
       .getItem('prod_fb_likers')
@@ -468,7 +488,7 @@ export class FacebookProfilePage {
                     dataArray.push(data.rows.item(i));
                   }
                 }
-                loader.dismiss();
+                // loader.dismiss();
                 env
                   .navCtrl
                   .push(LikesMeMostFbPage, {likers: dataArray});
@@ -517,17 +537,22 @@ export class FacebookProfilePage {
       this.presentToast();
       return;
     }
+    
     let db = this
       .sqliteService
       .getDbInstance();
+
     let env = this;
+
     let loader = this
       .loading
-      .create({content: 'Loading..'});
+      .create({content: 'Un Momento. Generando tu reporte', duration: 3000});
+      
     this
       .nativeStorage
       .getItem('prod_fb_lovers')
       .then(data => {
+  
         loader
           .present()
           .then(() => {
@@ -542,7 +567,7 @@ export class FacebookProfilePage {
                     dataArray.push(data.rows.item(i));
                   }
                 }
-                loader.dismiss();
+                // loader.dismiss();
                 env
                   .navCtrl
                   .push(HeartReactPage, {likers: dataArray});
@@ -597,7 +622,7 @@ export class FacebookProfilePage {
     let env = this;
     let loader = this
       .loading
-      .create({content: 'Loading..'});
+      .create({content: 'Un Momento. Generando tu reporte', duration: 3000});
     this
       .nativeStorage
       .getItem('prod_fb_laugh')
@@ -616,7 +641,7 @@ export class FacebookProfilePage {
                     dataArray.push(data.rows.item(i));
                   }
                 }
-                loader.dismiss();
+                // loader.dismiss();
                 env
                   .navCtrl
                   .push(LaughReactPage, {likers: dataArray});
@@ -675,6 +700,7 @@ export class FacebookProfilePage {
             .rows
             .item(0);
           env.urlHacker = obj.picture;
+          console.log('env this', obj.picture);
         } else {
           env.urlHacker = env.placeHolder6;
         }
@@ -720,12 +746,26 @@ export class FacebookProfilePage {
       this.presentToast();
       return;
     }
+
+    let loader = this       //edited
+      .loading
+      .create({
+        content: 'Un Momento. Generando tu reporte',
+        duration: 3000
+      });
+
+      loader          //edited
+          .present()
+          .then(() => {}).catch(()=> {});
+
     this
       .nativeStorage
       .getItem('whoViewedFbProfile')
       .then(data => {
+        loader.dismiss();
         this.fbViewers();
       }, error => {
+        loader.dismiss();
         this.presentModal(InAppPurchasePage);
       });
   }
@@ -745,6 +785,17 @@ export class FacebookProfilePage {
     let db = this
       .sqliteService
       .getDbInstance();
+
+      // let loader = this       //edited
+      // .loading
+      // .create({
+      //   content: 'Un Momento. Generando tu reporte',
+      //   duration: 3000
+      // });
+
+      // loader          //edited
+      //     .present()
+      //     .then(() => {}).catch(()=> {});
     db
       .executeSql('Select * from FacebookViewers', [])
       .then((data) => {
@@ -777,7 +828,8 @@ export class FacebookProfilePage {
               .navCtrl
               .push(WhoViewedProfileFbPage, {
                 likers: dataArray,
-                dates: []
+                // dates: []
+                dates: dates    //edited
               });
             }
           }).catch(() => {
@@ -948,10 +1000,18 @@ export class FacebookProfilePage {
     let db = this
       .sqliteService
       .getDbInstance();
+
+      let loader = this // edited
+      .loading
+      .create({content: 'Un Momento. Generando tu reporte', duration: 3000});
+
     this
       .nativeStorage
       .getItem('prod_fb_crush')
       .then(data => {
+        loader
+          .present()
+          .then(() => {}).catch(()=> {});
         db
           .executeSql('Select * from FacebookHackers', [])
           .then((data) => {
@@ -962,7 +1022,7 @@ export class FacebookProfilePage {
                 dataArray.push(data.rows.item(i));
               }
             }
-
+            loader.dismiss();     //edited
             let dates = [];
             db
               .executeSql('Select distinct(date) from FacebookHackers', [])
@@ -972,6 +1032,7 @@ export class FacebookProfilePage {
                   for (let i = 0; i < length; i++) {
                     dates.push(dataDate.rows.item(i));
                   }
+                  
                   this
                     .navCtrl
                     .push(FacebookHackersPage, {
@@ -982,16 +1043,19 @@ export class FacebookProfilePage {
                   this
                     .navCtrl
                     .push(FacebookHackersPage, {
-                      likers: [],
+                      // likers: [],
+                      likers: dataArray,  //edited 30-april
                       dates: []
                     });
                 }
               }).catch(() => {
+                loader.dismiss();
                 this.errorToast("Please try again later!");
               });
 
           })
           .catch(e => {
+            loader.dismiss();
             this.errorToast("Please try again later!");
           });
       }, error => {
@@ -1205,10 +1269,12 @@ export class FacebookProfilePage {
             text: 'Cancelar',
             role: 'cancel',
             handler: () => {
-              actionSheet.dismiss();
+              actionSheet.dismiss().then(()=> {}).catch(()=> {
+
+              });
+              return false;
             }
-          }
-        ]
+          }]
       });
     actionSheet.present();
   }
@@ -1217,5 +1283,4 @@ export class FacebookProfilePage {
     if (event) 
       event.target.src = "./assets/imgs/no-image.jpeg";
     }
-  
 }

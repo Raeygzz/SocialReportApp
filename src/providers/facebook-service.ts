@@ -56,6 +56,7 @@ export class FacebookService {
         if (data == true) {
           // env.fb.api("/" + env.id + "/photos/?fields=picture%2Clikes.limit(999)%7Bpic_small%2Cname%7D&limit=999&type=uploaded", params).then((userPhotos) => {
           env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=uploaded", params).then((userPhotos) => {
+          
             console.log("UPLOADED.. Fb", userPhotos);
             // env.fb.api("/" + env.id + "/photos/?fields=picture%2Clikes.limit(999)%7Bpic_small%2Cname%7D&limit=999&type=tagged", params).then((userTaggedPhotos) => {
             env.fb.api("/" + env.id + "/photos?fields=id%2Cpicture%2Creactions.limit(9999)%7Bid%2Cpic_small%2Cname%2Ctype%7D&limit=9999&type=tagged", params).then((userTaggedPhotos) => {

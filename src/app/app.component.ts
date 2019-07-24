@@ -145,17 +145,16 @@ export class MyApp {
 
         const options = {
           devKey: 'wtReduzb6GWm4hsgMiNPAX',
+          appID: 'com.ionic.socialReportsApp',
           isDebug: false,
           onInstallConversionDataListener: true
         };
-
+        
         window
           .plugins
-          .appsFlyer
+          .appsFlyer                                    
           .initSdk(options, onSuccess, onError);
-
       });
-
   }
 }
 

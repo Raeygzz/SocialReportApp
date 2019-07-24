@@ -12,8 +12,14 @@ import window from '../../app/app.component';
 })
 export class InAppPurchaseFbPhotosPage {
 
-  eventName:string = "photosFbProfile";
-  eventValues:any = {"photosFbProfileCurrency":"USD", "photosFbProfileRevenue": "5"};
+  eventName:string = "mostlikedphoto";
+  eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
+
+  // eventName:string = "photosFbProfile";
+  // eventValues:any = {"photosFbProfileCurrency":"USD", "photosFbProfileRevenue": "5"};
+
+  // eventName:string = "af_purchase_photos";
+  // eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
 
   constructor(
     public navCtrl: NavController, 
@@ -23,6 +29,14 @@ export class InAppPurchaseFbPhotosPage {
     private loading: LoadingController
   ) {
   }
+
+  // ionViewWillEnter() {
+  //   this.nativeStorage.setItem('prod_fb_photos', "True")
+  //     .then(() => {
+  //       // window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+  //       this.navCtrl.pop()
+  //     });
+  // }
 
   ionViewDidLoad() {
     // this.getProducts();
@@ -69,20 +83,25 @@ export class InAppPurchaseFbPhotosPage {
     .buy('prod_fb_photos_sub_final')
     .then(data => {
       loader.dismiss();
+      window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
       alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_photos', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
         window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         env.nativeStorage.setItem('prod_fb_photos', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);    //edited
       })
     }).catch((err) => {
       loader.dismiss();
@@ -110,20 +129,25 @@ export class InAppPurchaseFbPhotosPage {
     .buy('prod_fb_photos_sub_final')
     .then(data => {
       loader.dismiss();
+      window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
       alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_photos', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
         window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         env.nativeStorage.setItem('prod_fb_photos', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);    //edited
       })
     }).catch((err) => {
       loader.dismiss();

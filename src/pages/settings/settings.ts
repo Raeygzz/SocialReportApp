@@ -3,18 +3,20 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
+import { ModalController, ViewController } from 'ionic-angular';
+import { ModalContentComponent } from '../../components/modal-content/modal-content';
+import { AlertController } from 'ionic-angular';
+
 @IonicPage()
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html',
 })
 export class SettingsPage {
-
   hideSubscribedFacebook:boolean = false;
   hideSubscribedInstagram:boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage, private iab: InAppBrowser) {
-    
+  constructor(public navCtrl: NavController, public navParams: NavParams, public nativeStorage: NativeStorage, private iab: InAppBrowser, public modalCtrl: ModalController, public viewCtrl: ViewController, private alertCtrl: AlertController) {
   }
 
   ionViewWillEnter(){
@@ -30,13 +32,35 @@ export class SettingsPage {
   }
 
   cancelSubscriptionFacebook(){
-    this.nativeStorage.remove('whoViewedFbProfile');
-    this.nativeStorage.remove('prod_fb_crush');
-    this.nativeStorage.remove('prod_fb_laugh');
-    this.nativeStorage.remove('prod_fb_likers');
-    this.nativeStorage.remove('prod_fb_lovers');
-    this.nativeStorage.remove('prod_fb_photos');
-    this.hideSubscribedFacebook = false;
+    let alert = this.alertCtrl.create({
+      title: 'Estas seguro de que quieres dejar de ver quien ve tu perfil en Facebook?',
+      buttons: [
+        {
+          text: 'Seguir Viendo',
+          role: 'cancel',
+          handler: () => {
+            console.log('do not cancel suscriptions');
+          }
+        },
+        {
+          text: 'Dar De Baja',
+          role: 'Yes',
+          handler: () => {
+            // alert.dismiss().then(() => {
+            console.log('cancel sunscription');
+            this.nativeStorage.remove('whoViewedFbProfile');
+            this.nativeStorage.remove('prod_fb_crush');
+            this.nativeStorage.remove('prod_fb_laugh');
+            this.nativeStorage.remove('prod_fb_likers');
+            this.nativeStorage.remove('prod_fb_lovers');
+            this.nativeStorage.remove('prod_fb_photos');
+            this.hideSubscribedFacebook = false;
+          // });
+          // return false;
+          }
+        }]
+    });
+    alert.present();
   }
 
   getProducts(){
@@ -58,9 +82,8 @@ export class SettingsPage {
     });
   }
 
-  termsAndCondition(){
-    let url = 'https://www.google.com/';
-    this.iab.create(url);
+  openModal() {
+    let modal = this.modalCtrl.create(ModalContentComponent);
+    modal.present();
   }
-
 }

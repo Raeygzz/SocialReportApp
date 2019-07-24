@@ -5,6 +5,8 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { LoadingController } from 'ionic-angular';
 import window from '../../app/app.component';
 
+import {Platform} from 'ionic-angular';
+
 @IonicPage()
 @Component({
   selector: 'page-in-app-purchase',
@@ -12,18 +14,32 @@ import window from '../../app/app.component';
 })
 export class InAppPurchasePage {
 
-  eventName:string = "whoViewedFbProfile";
-  eventValues:any = {"whoViewedFbProfileCurrency":"USD", "whoViewedFbProfileRevenue": "5"};
+  eventName:string = "whoviewedyourprofile";
+  eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
+
+  // eventName:string = "whoViewedFbProfile";
+  // eventValues:any = {"whoViewedFbProfileCurrency":"USD", "whoViewedFbProfileRevenue": "5"};
+
+  // eventName:string = "af_purchase";
+  // eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private iap: InAppPurchase,
     private nativeStorage: NativeStorage,
-    public loading : LoadingController
+    public loading : LoadingController,
+    public platform : Platform
   ) {
-
   }
+
+  // ionViewWillEnter() {
+  //   this.nativeStorage.setItem('whoViewedFbProfile', "True")
+  //     .then(() => {
+  //       // window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+  //       this.navCtrl.pop()
+  //     });
+  // }
 
   ionViewDidLoad() {
     // this.getProducts();
@@ -70,20 +86,25 @@ export class InAppPurchasePage {
       .buy('prod1_sub_final')
       .then(data => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
-            .then(
-            () => env.navCtrl.pop(),
-          );
+            .then(() => {
+              window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+              env.navCtrl.pop()
+            });
           window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           console.log('product was successfully consumed!')
         }).catch(() => {
           loader.dismiss();
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+          .then(() => {
+            window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+            env.navCtrl.pop()
+          });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues); //edited
         })
       }).catch((err) => {
         // alert(JSON.stringify(err));
@@ -112,22 +133,26 @@ export class InAppPurchasePage {
       .then(data => {
         // alert(JSON.stringify(data));
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
         this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
-            .then(
-            () => env.navCtrl.pop(),
-          ).catch(() => {
-            loader.dismiss();
-          });
+            .then(() => {
+              window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+              env.navCtrl.pop()
+            });
           window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           console.log('product was successfully consumed!')
         }).catch(() => {
           loader.dismiss();
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           env.nativeStorage.setItem('whoViewedFbProfile', "True")
-          .then(
-          () => env.navCtrl.pop(),
+          .then(() => {
+            window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+            env.navCtrl.pop()
+          } 
         );
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         })
       }).catch((err) => {
         // alert(JSON.stringify(err));
@@ -155,5 +180,4 @@ export class InAppPurchasePage {
     loader.dismiss();
   })
   }
-
 }

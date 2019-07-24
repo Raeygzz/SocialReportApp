@@ -10,10 +10,17 @@ import window from '../../app/app.component';
   selector: 'page-in-app-purchase-fb-love',
   templateUrl: 'in-app-purchase-fb-love.html',
 })
+
 export class InAppPurchaseFbLovePage {
 
-  eventName:string = "loveFbProfile";
-  eventValues:any = {"loveFbProfileCurrency":"USD", "loveFbProfileRevenue": "5"};
+  eventName:string = "wholovesyoumost";
+  eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
+
+  // eventName:string = "loveFbProfile";
+  // eventValues:any = {"loveFbProfileCurrency":"USD", "loveFbProfileRevenue": "5"};
+
+  // eventName:string = "af_purchase_love";
+  // eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
 
   constructor(
     public navCtrl: NavController,
@@ -23,6 +30,13 @@ export class InAppPurchaseFbLovePage {
     private loading: LoadingController
   ) {
   }
+
+  // ionViewWillEnter() {
+  //   this.nativeStorage.setItem('prod_fb_lovers', "True").then(() => {
+  //     // window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+  //     this.navCtrl.pop()
+  //   });
+  // }
 
   ionViewDidLoad() {
     // this.getProducts();
@@ -51,7 +65,6 @@ export class InAppPurchaseFbLovePage {
       });
   }
 
-
   buyProducts() {
       let env = this;
       let loader = this
@@ -69,20 +82,25 @@ export class InAppPurchaseFbLovePage {
         .buy('prod_fb_lovers_sub_final')
         .then(data => {
           loader.dismiss();
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
           this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
             env.nativeStorage.setItem('prod_fb_lovers', "True")
-              .then(
-              () => env.navCtrl.pop(),
-            );
+            .then(() => {
+              window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+              env.navCtrl.pop()
+            });
             window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
             console.log('product was successfully consumed!')
           }).catch(() => {
             loader.dismiss();
+            window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
             env.nativeStorage.setItem('prod_fb_lovers', "True")
-            .then(
-            () => env.navCtrl.pop(),
-          );
+            .then(() => {
+              window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+              env.navCtrl.pop()
+            });
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);  //edited
           })
         }).catch((err) => {
           loader.dismiss();
@@ -105,26 +123,31 @@ export class InAppPurchaseFbLovePage {
       })
       .catch((err) => {
         // alert(JSON.stringify(err));
-        loader.dismiss();
+        // loader.dismiss();
         env.iap
         .buy('prod_fb_lovers_sub_final')
         .then(data => {
           loader.dismiss();
           // alert(JSON.stringify(data));
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
           alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
           this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
             env.nativeStorage.setItem('prod_fb_lovers', "True")
-              .then(
-              () => env.navCtrl.pop(),
-            );
+            .then(() => {
+              window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+              env.navCtrl.pop()
+            });
             window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
             console.log('product was successfully consumed!')
           }).catch(() => {
             loader.dismiss();
+            window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
             env.nativeStorage.setItem('prod_fb_lovers', "True")
-            .then(
-            () => env.navCtrl.pop(),
-          );
+            .then(() => {
+              window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+              env.navCtrl.pop()
+            });
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);  //edited
           })
         }).catch((err) => {
           loader.dismiss();

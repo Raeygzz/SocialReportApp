@@ -97,12 +97,13 @@ export class InstagramHomePage {
     let env = this;
     env.oauth.logInVia(this.instagramProvider).then((success) => {
       loader.present().then(() => {
+        
         env.nativeStorage.setItem("inToken", success)
           .then(
           () => {
             loader.setContent("Analysing data. Please Wait...");
             env.instagramService.likesYouMost(true).then((data) => {
-              console.log("Database Filled");
+              console.log("Database Filled", data);
               loader.dismiss();
               env.navCtrl.push(ProfilePage);
             }).catch(() => {

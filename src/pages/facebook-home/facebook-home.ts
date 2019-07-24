@@ -15,6 +15,7 @@ import { SqliteService } from '../../providers/sqlite';
   selector: 'page-facebook-home',
   templateUrl: 'facebook-home.html',
 })
+
 export class FacebookHomePage {
 
   isFbLoggedIn: boolean = false;
@@ -30,11 +31,9 @@ export class FacebookHomePage {
     private iab: InAppBrowser,
     public facebookService: FacebookService,
     public toastCtrl: ToastController,
-    public sqliteService: SqliteService
+    public sqliteService: SqliteService,
   ) {
-
     this.fb.browserInit(this.FB_APP_ID, "v2.11");
-
   }
 
   ionViewWillEnter() {

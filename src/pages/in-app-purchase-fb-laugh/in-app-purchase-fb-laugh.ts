@@ -12,8 +12,14 @@ import window from '../../app/app.component';
 })
 export class InAppPurchaseFbLaughPage {
 
-  eventName:string = "laughFbProfile";
-  eventValues:any = {"laughFbProfileCurrency":"USD", "laughFbProfileRevenue": "5"};
+  eventName:string = "whomakesyoulaughmore";
+  eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
+
+  // eventName:string = "laughFbProfile";
+  // eventValues:any = {"laughFbProfileCurrency":"USD", "laughFbProfileRevenue": "5"};
+
+  // eventName:string = "af_purchase_laugh";
+  // eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
 
   constructor(
     public navCtrl: NavController, 
@@ -23,6 +29,14 @@ export class InAppPurchaseFbLaughPage {
     private loading: LoadingController
   ) {
   }
+
+  // ionViewWillEnter() {
+  //   this.nativeStorage.setItem('prod_fb_laugh', "True")
+  //     .then(() => {
+  //       // window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+  //       this.navCtrl.pop()
+  //     });
+  //   }
 
   ionViewDidLoad() {
     // this.getProducts();
@@ -67,20 +81,25 @@ export class InAppPurchaseFbLaughPage {
     .buy('prod_fb_laugh_sub_final')
     .then(data => {
       loader.dismiss();
+      window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
       alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       env.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_laugh', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+          .then(() => {
+            window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+            env.navCtrl.pop()
+          });
         window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         env.nativeStorage.setItem('prod_fb_laugh', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);  //edited
       })
     }).catch((err) => {
       loader.dismiss();
@@ -108,20 +127,25 @@ export class InAppPurchaseFbLaughPage {
     .then(data => {
       loader.dismiss();
       // alert("data "+JSON.stringify(data));
+      window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
       alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       env.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_laugh', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
         window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         env.nativeStorage.setItem('prod_fb_laugh', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues); // edited
       })
     }).catch((err) => {
       loader.dismiss();

@@ -12,8 +12,14 @@ import window from '../../app/app.component';
 })
 export class InAppPurchaseFbLikersPage {
 
-  eventName:string = "likersFbProfile";
-  eventValues:any = {"likersFbProfileCurrency":"USD", "likersFbProfileRevenue": "5"};
+  eventName:string = "wholikesyoumost";
+  eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
+
+   // eventName:string = "likersFbProfile";
+  // eventValues:any = {"likersFbProfileCurrency":"USD", "likersFbProfileRevenue": "5"};
+
+  // eventName:string = "af_purchase_likers";
+  // eventValues:any = {"af_currency":"USD", "af_revenue": "5"};
 
   constructor(
     public navCtrl: NavController, 
@@ -24,8 +30,16 @@ export class InAppPurchaseFbLikersPage {
   ) {
   }
 
+  // ionViewWillEnter() {
+  //   this.nativeStorage.setItem('prod_fb_likers', "True")
+  //   .then(() => {
+  //     // window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+  //     this.navCtrl.pop()
+  //   });
+  // }
+
   ionViewDidLoad() {
-    this.getProducts();
+    // this.getProducts();      //edited
   }
 
   closeModal(){
@@ -57,6 +71,7 @@ export class InAppPurchaseFbLikersPage {
   let loader = this
   .loading
   .create({content: 'Loading..'});
+
   loader
   .present()
   .then(() => {
@@ -70,20 +85,25 @@ export class InAppPurchaseFbLikersPage {
     .buy('prod_fb_likers_sub_final')
     .then(data => {
       loader.dismiss();
+      window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
       alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_likers', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
         window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         env.nativeStorage.setItem('prod_fb_likers', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues); //edited
       })
     }).catch((err) => {
       loader.dismiss();
@@ -111,20 +131,27 @@ export class InAppPurchaseFbLikersPage {
     .buy('prod_fb_likers_sub_final')
     .then(data => {
       loader.dismiss();
+      window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
       alert('Felicidades! Ingresa a tu reporte desde la pagina principal.');
       this.iap.consume(data.productType, data.receipt, data.signature).then(() => {
         env.nativeStorage.setItem('prod_fb_likers', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        }).catch(() => {
+            loader.dismiss();
+          });
         window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         console.log('product was successfully consumed!')
       }).catch(() => {
         loader.dismiss();
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
         env.nativeStorage.setItem('prod_fb_likers', "True")
-          .then(
-          () => env.navCtrl.pop(),
-        );
+        .then(() => {
+          window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);
+          env.navCtrl.pop()
+        });
+        window.plugins.appsFlyer.trackEvent(this.eventName, this.eventValues);    //edited
       })
     }).catch((err) => {
       loader.dismiss();
@@ -146,7 +173,7 @@ export class InAppPurchaseFbLikersPage {
     })
 
   });
-}).then(() => {
+}).catch(() => {
   loader.dismiss();
 });
 

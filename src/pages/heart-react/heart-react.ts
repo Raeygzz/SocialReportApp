@@ -14,7 +14,7 @@ export class HeartReactPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService:SqliteService) {
     this.likers = navParams.get("likers");
-    console.log(navParams.get("likers"));
+    // console.log(navParams.get("likers"));
     this.data = true;
     // this.dbViewFlagUpdate();
   }

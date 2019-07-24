@@ -74,6 +74,14 @@ export class ProfilePage {
   }
 
   ionViewWillEnter() {
+
+    let loader = this.loading.create({
+      content: 'Loading..',
+      duration: 1000
+    });
+
+    loader.present().then(() => {}).catch(() => {});  //edited
+
     let vm = this;
 
     this.badgeCounterLikers();

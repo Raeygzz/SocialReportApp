@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SqliteService } from '../../providers/sqlite';
+import {LoadingController} from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -12,11 +13,18 @@ export class LikesMeMostFbPage {
   likers: any = [];
   data: boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService: SqliteService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService: SqliteService, public loading : LoadingController) {
+
+    // let loader = this.loading.create({
+    //   content: 'Un Momento. Generando tu reporte',
+    //   duration: 3000
+    // });
+    // loader.present().then(() => {
+    this.data = true;
     this.likers = navParams.get("likers");
     console.log(navParams.get("likers"));
-    this.data = true;
     // this.dbViewFlagUpdate();
+    // }).catch(()=>{});
   }
 
   // dbViewFlagUpdate() {

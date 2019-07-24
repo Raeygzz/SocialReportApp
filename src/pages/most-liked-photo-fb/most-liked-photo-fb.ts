@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { SqliteService } from '../../providers/sqlite';
+import {LoadingController} from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -9,11 +10,19 @@ import { SqliteService } from '../../providers/sqlite';
 })
 export class MostLikedPhotoFbPage {
 
-  mostLikedPhotosArray:any;
+  // mostLikedPhotosArray:any;
+  mostLikedPhotosArray:any = [];        //edited
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService:SqliteService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public sqliteService:SqliteService, public loading : LoadingController) {
+
+    // let loader = this.loading.create({
+    //     content: 'Un Momento. Generando tu reporte',
+    //     duration: 3000
+    //   });
+    //   loader.present().then(() => {
     this.mostLikedPhotosArray = navParams.get("mostLikedPhotosArray");
     // this.dbViewFlagUpdate();
+    // }).catch(()=>{});
   }
 
   // dbViewFlagUpdate() {
